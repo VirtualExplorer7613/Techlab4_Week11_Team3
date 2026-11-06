@@ -39,6 +39,11 @@ function CommonSettings()
 	staticruntime "off"
 	characterset  "Unicode"
 
+	vsprops
+	{
+    VcpkgAutoLink = "false",
+	}
+
 	targetdir ("Build/Bin/" .. outputdir)
 	objdir    ("Build/Intermediate/" .. outputdir)
 	-- 에셋·쉐이더를 상대 경로로 읽으므로 작업 디렉터리는 저장소 루트다.
