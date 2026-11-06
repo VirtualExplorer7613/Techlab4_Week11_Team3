@@ -1,0 +1,242 @@
+{
+  "BindingReferences": [
+    {
+      "Actor": "IcePlayer",
+      "Guid": "8EA056F4DFE12E47E94973CE655AB4CC"
+    },
+    {
+      "Actor": "PlayerCamera",
+      "Guid": "A0FA89B3DC30FFCF74346820022D0B1D"
+    }
+  ],
+  "MovieScene": {
+    "Bindings": [
+      {
+        "Class": "AActor",
+        "Guid": "8EA056F4DFE12E47E94973CE655AB4CC",
+        "Name": "IcePlayer",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -2.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 96800,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "APawn",
+        "Guid": "A0FA89B3DC30FFCF74346820022D0B1D",
+        "Name": "PlayerCamera",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "CameraCutTrack": {
+      "BlendTime": 0.5,
+      "CanBlend": true,
+      "Class": "UMovieSceneCameraCutTrack",
+      "EvalDisabled": false,
+      "Sections": [
+        {
+          "Active": true,
+          "Camera": "8EA056F4DFE12E47E94973CE655AB4CC",
+          "Channels": [],
+          "Class": "UMovieSceneCameraCutSection",
+          "Completion": 2,
+          "End": 96000,
+          "Start": 0
+        },
+        {
+          "Active": true,
+          "Camera": "A0FA89B3DC30FFCF74346820022D0B1D",
+          "Channels": [],
+          "Class": "UMovieSceneCameraCutSection",
+          "Completion": 2,
+          "Start": 96000
+        }
+      ]
+    },
+    "DisplayRate": [
+      30,
+      1
+    ],
+    "PlaybackEnd": 144000,
+    "PlaybackStart": 0,
+    "TickResolution": [
+      24000,
+      1
+    ],
+    "Tracks": [
+      {
+        "Class": "UMovieSceneCameraOverlayTrack",
+        "EvalDisabled": false,
+        "Sections": [
+          {
+            "Active": true,
+            "Channels": [
+              {
+                "Keys": [
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 96000,
+                    "Value": 1.0
+                  },
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 120000,
+                    "Value": 0.0
+                  }
+                ]
+              },
+              {
+                "Keys": []
+              }
+            ],
+            "Class": "UMovieSceneCameraOverlaySection",
+            "Completion": 2,
+            "LetterboxAspect": 2.390000104904175
+          }
+        ]
+      },
+      {
+        "Class": "UMovieSceneFadeTrack",
+        "EvalDisabled": false,
+        "Sections": [
+          {
+            "Active": true,
+            "Channels": [
+              {
+                "Keys": [
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 12000,
+                    "Value": 1.0
+                  },
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 24000,
+                    "Value": 0.0
+                  }
+                ]
+              }
+            ],
+            "Class": "UMovieSceneFadeSection",
+            "Completion": 2,
+            "FadeAudio": false,
+            "FadeColor": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Type": "LevelSequence"
+}

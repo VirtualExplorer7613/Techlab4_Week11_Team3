@@ -1,0 +1,68 @@
+{
+  "DesignSize": [
+    1920,
+    1080
+  ],
+  "ParentClass": "UUserWidget",
+  "Root": {
+    "Children": [
+      {
+        "Class": "UTextBlock",
+        "Properties": {
+          "AlignmentX": 0.0,
+          "AlignmentY": 0.0,
+          "Anchors": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "ColorAndOpacity": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "FontPath": "Assets/Fonts/Pretendard.json",
+          "FontSize": 32.0,
+          "Justification": 0,
+          "Offsets": [
+            40.0,
+            38.39524841308594,
+            613.13818359375,
+            179.39028930664063
+          ],
+          "RenderOpacity": 1.0,
+          "Text": "테스트 블록입니다.",
+          "Visibility": 0,
+          "WidgetName": "TextBlock140",
+          "ZOrder": 0,
+          "bAutoSize": false
+        }
+      }
+    ],
+    "Class": "UCanvasPanel",
+    "Properties": {
+      "AlignmentX": 0.0,
+      "AlignmentY": 0.0,
+      "Anchors": [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "Offsets": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "RenderOpacity": 1.0,
+      "Visibility": 0,
+      "WidgetName": "Root",
+      "ZOrder": 0,
+      "bAutoSize": false
+    }
+  },
+  "Version": 1
+}

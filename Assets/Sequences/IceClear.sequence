@@ -1,0 +1,3299 @@
+{
+  "BindingReferences": [
+    {
+      "Actor": "Clear_Hero",
+      "Guid": "1CEC1EA4000000000000000000000001"
+    },
+    {
+      "Actor": "Clear_Ultralisk",
+      "Guid": "1CEC1EA4000000000000000000000002"
+    },
+    {
+      "Actor": "Clear_Shiba",
+      "Guid": "1CEC1EA4000000000000000000000003"
+    },
+    {
+      "Actor": "Clear_CameraFollow",
+      "Guid": "1CEC1EA4000000000000000000000004"
+    },
+    {
+      "Actor": "Clear_CameraPursuit",
+      "Guid": "1CEC1EA4000000000000000000000005"
+    },
+    {
+      "Actor": "Clear_CameraReaction",
+      "Guid": "1CEC1EA4000000000000000000000006"
+    },
+    {
+      "Actor": "Clear_CameraResult",
+      "Guid": "1CEC1EA4000000000000000000000007"
+    }
+  ],
+  "MovieScene": {
+    "Bindings": [
+      {
+        "Class": "AStaticMeshActor",
+        "Guid": "1CEC1EA4000000000000000000000001",
+        "Name": "Clear_Hero",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -12.0
+                      },
+                      {
+                        "Arrive": 0.00041666667675599456,
+                        "Interp": 2,
+                        "Leave": 0.00041666667675599456,
+                        "TangentMode": 0,
+                        "Time": 24000,
+                        "Value": -1.0
+                      },
+                      {
+                        "Arrive": 0.0003055555571336299,
+                        "Interp": 2,
+                        "Leave": 0.0003055555571336299,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 8.0
+                      },
+                      {
+                        "Arrive": 1.6666666851961054e-05,
+                        "Interp": 2,
+                        "Leave": 1.6666666851961054e-05,
+                        "TangentMode": 0,
+                        "Time": 60000,
+                        "Value": 10.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 168000,
+                        "Value": 10.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 180000,
+                        "Value": 10.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 192000,
+                        "Value": 10.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 196800,
+                        "Value": 10.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 202800,
+                        "Value": 10.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 211200,
+                        "Value": 10.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 10.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -3.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 24000,
+                        "Value": -3.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": -3.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 60000,
+                        "Value": -3.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 168000,
+                        "Value": -3.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 180000,
+                        "Value": -3.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 192000,
+                        "Value": -3.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 196800,
+                        "Value": -3.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 202800,
+                        "Value": -3.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 211200,
+                        "Value": -3.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": -3.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.8500000238418579
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 24000,
+                        "Value": 0.8500000238418579
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 0.8500000238418579
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 60000,
+                        "Value": 0.8500000238418579
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 168000,
+                        "Value": 0.8500000238418579
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 180000,
+                        "Value": 0.8500000238418579
+                      },
+                      {
+                        "Arrive": 1.785714084689971e-05,
+                        "Interp": 2,
+                        "Leave": 1.785714084689971e-05,
+                        "TangentMode": 0,
+                        "Time": 192000,
+                        "Value": 0.8500000238418579
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 196800,
+                        "Value": 1.149999976158142
+                      },
+                      {
+                        "Arrive": -2.083332947222516e-05,
+                        "Interp": 2,
+                        "Leave": -2.083332947222516e-05,
+                        "TangentMode": 0,
+                        "Time": 202800,
+                        "Value": 0.8500000238418579
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 211200,
+                        "Value": 0.8500000238418579
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 0.8500000238418579
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 24000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 60000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 168000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 180000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 192000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 196800,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 202800,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 211200,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 24000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 60000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": -0.0011249999515712261,
+                        "Interp": 2,
+                        "Leave": -0.0011249999515712261,
+                        "TangentMode": 0,
+                        "Time": 168000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": -0.005625000223517418,
+                        "Interp": 2,
+                        "Leave": -0.005625000223517418,
+                        "TangentMode": 0,
+                        "Time": 180000,
+                        "Value": -135.0
+                      },
+                      {
+                        "Arrive": 0.0020833334419876337,
+                        "Interp": 2,
+                        "Leave": 0.0020833334419876337,
+                        "TangentMode": 0,
+                        "Time": 192000,
+                        "Value": -135.0
+                      },
+                      {
+                        "Arrive": 0.009722222574055195,
+                        "Interp": 2,
+                        "Leave": 0.009722222574055195,
+                        "TangentMode": 0,
+                        "Time": 196800,
+                        "Value": -100.0
+                      },
+                      {
+                        "Arrive": 0.0069444444961845875,
+                        "Interp": 2,
+                        "Leave": 0.0069444444961845875,
+                        "TangentMode": 0,
+                        "Time": 202800,
+                        "Value": -30.0
+                      },
+                      {
+                        "Arrive": 0.00035211266367696226,
+                        "Interp": 2,
+                        "Leave": 0.00035211266367696226,
+                        "TangentMode": 0,
+                        "Time": 211200,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 6.25000029685907e-05,
+                        "Interp": 2,
+                        "Leave": 6.25000029685907e-05,
+                        "TangentMode": 0,
+                        "Time": 24000,
+                        "Value": -4.0
+                      },
+                      {
+                        "Arrive": 0.00011111111234640703,
+                        "Interp": 2,
+                        "Leave": 0.00011111111234640703,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 3.0
+                      },
+                      {
+                        "Arrive": -2.499999936844688e-05,
+                        "Interp": 2,
+                        "Leave": -2.499999936844688e-05,
+                        "TangentMode": 0,
+                        "Time": 60000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 168000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 180000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 192000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 196800,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 202800,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 211200,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 3.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 3.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 3.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 3.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 3.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 3.0
+                      }
+                    ]
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "AStaticMeshActor",
+        "Guid": "1CEC1EA4000000000000000000000002",
+        "Name": "Clear_Ultralisk",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -29.0
+                      },
+                      {
+                        "Arrive": 0.0003055555571336299,
+                        "Interp": 2,
+                        "Leave": 0.0003055555571336299,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": -16.0
+                      },
+                      {
+                        "Arrive": 0.00034374999813735485,
+                        "Interp": 2,
+                        "Leave": 0.00034374999813735485,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": -7.0
+                      },
+                      {
+                        "Arrive": 0.00027777778450399637,
+                        "Interp": 2,
+                        "Leave": 0.00027777778450399637,
+                        "TangentMode": 0,
+                        "Time": 96000,
+                        "Value": 0.5
+                      },
+                      {
+                        "Arrive": 0.0001291666558245197,
+                        "Interp": 2,
+                        "Leave": 0.0001291666558245197,
+                        "TangentMode": 0,
+                        "Time": 108000,
+                        "Value": 3.0
+                      },
+                      {
+                        "Arrive": -1.2499997865234036e-05,
+                        "Interp": 2,
+                        "Leave": -1.2499997865234036e-05,
+                        "TangentMode": 0,
+                        "Time": 120000,
+                        "Value": 3.5999999046325684
+                      },
+                      {
+                        "Arrive": -0.00010833332635229453,
+                        "Interp": 2,
+                        "Leave": -0.00010833332635229453,
+                        "TangentMode": 0,
+                        "Time": 132000,
+                        "Value": 2.700000047683716
+                      },
+                      {
+                        "Arrive": -8.854166662786156e-05,
+                        "Interp": 2,
+                        "Leave": -8.854166662786156e-05,
+                        "TangentMode": 0,
+                        "Time": 144000,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": -1.851851811807137e-05,
+                        "Interp": 2,
+                        "Leave": -1.851851811807137e-05,
+                        "TangentMode": 0,
+                        "Time": 151200,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 154800,
+                        "Value": 0.800000011920929
+                      },
+                      {
+                        "Arrive": 1.5015014014352346e-06,
+                        "Interp": 2,
+                        "Leave": 1.5015014014352346e-06,
+                        "TangentMode": 0,
+                        "Time": 163200,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 2.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 2.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": 2.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 96000,
+                        "Value": 2.0
+                      },
+                      {
+                        "Arrive": 1.2499997865234036e-05,
+                        "Interp": 2,
+                        "Leave": 1.2499997865234036e-05,
+                        "TangentMode": 0,
+                        "Time": 108000,
+                        "Value": 2.0
+                      },
+                      {
+                        "Arrive": 2.4999995730468072e-05,
+                        "Interp": 2,
+                        "Leave": 2.4999995730468072e-05,
+                        "TangentMode": 0,
+                        "Time": 120000,
+                        "Value": 2.299999952316284
+                      },
+                      {
+                        "Arrive": 2.0833333110203966e-05,
+                        "Interp": 2,
+                        "Leave": 2.0833333110203966e-05,
+                        "TangentMode": 0,
+                        "Time": 132000,
+                        "Value": 2.5999999046325684
+                      },
+                      {
+                        "Arrive": 1.0416669283586089e-05,
+                        "Interp": 2,
+                        "Leave": 1.0416669283586089e-05,
+                        "TangentMode": 0,
+                        "Time": 144000,
+                        "Value": 2.799999952316284
+                      },
+                      {
+                        "Arrive": 1.851852357503958e-05,
+                        "Interp": 2,
+                        "Leave": 1.851852357503958e-05,
+                        "TangentMode": 0,
+                        "Time": 151200,
+                        "Value": 2.799999952316284
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 154800,
+                        "Value": 3.0
+                      },
+                      {
+                        "Arrive": -1.5015018561825855e-06,
+                        "Interp": 2,
+                        "Leave": -1.5015018561825855e-06,
+                        "TangentMode": 0,
+                        "Time": 163200,
+                        "Value": 2.799999952316284
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 2.799999952316284
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 1.805555484679644e-06,
+                        "Interp": 2,
+                        "Leave": 1.805555484679644e-06,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": 0.12999999523162842
+                      },
+                      {
+                        "Arrive": 3.333333552291151e-06,
+                        "Interp": 2,
+                        "Leave": 3.333333552291151e-06,
+                        "TangentMode": 0,
+                        "Time": 96000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 2.5000001187436283e-05,
+                        "Interp": 2,
+                        "Leave": 2.5000001187436283e-05,
+                        "TangentMode": 0,
+                        "Time": 108000,
+                        "Value": 0.25
+                      },
+                      {
+                        "Arrive": 2.7083331588073634e-05,
+                        "Interp": 2,
+                        "Leave": 2.7083331588073634e-05,
+                        "TangentMode": 0,
+                        "Time": 120000,
+                        "Value": 0.6000000238418579
+                      },
+                      {
+                        "Arrive": 8.333332516485825e-06,
+                        "Interp": 2,
+                        "Leave": 8.333332516485825e-06,
+                        "TangentMode": 0,
+                        "Time": 132000,
+                        "Value": 0.8999999761581421
+                      },
+                      {
+                        "Arrive": -2.604164137665066e-06,
+                        "Interp": 2,
+                        "Leave": -2.604164137665066e-06,
+                        "TangentMode": 0,
+                        "Time": 144000,
+                        "Value": 0.800000011920929
+                      },
+                      {
+                        "Arrive": 1.3888886314816773e-05,
+                        "Interp": 2,
+                        "Leave": 1.3888886314816773e-05,
+                        "TangentMode": 0,
+                        "Time": 151200,
+                        "Value": 0.8500000238418579
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 154800,
+                        "Value": 0.949999988079071
+                      },
+                      {
+                        "Arrive": -7.507504733439418e-07,
+                        "Interp": 2,
+                        "Leave": -7.507504733439418e-07,
+                        "TangentMode": 0,
+                        "Time": 163200,
+                        "Value": 0.8500000238418579
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 0.8500000238418579
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.00014583332813344896,
+                        "Interp": 2,
+                        "Leave": 0.00014583332813344896,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": -0.00016666666488163173,
+                        "Interp": 2,
+                        "Leave": -0.00016666666488163173,
+                        "TangentMode": 0,
+                        "Time": 96000,
+                        "Value": 7.0
+                      },
+                      {
+                        "Arrive": -0.0002916666562668979,
+                        "Interp": 2,
+                        "Leave": -0.0002916666562668979,
+                        "TangentMode": 0,
+                        "Time": 108000,
+                        "Value": -6.0
+                      },
+                      {
+                        "Arrive": 0.0002500000118743628,
+                        "Interp": 2,
+                        "Leave": 0.0002500000118743628,
+                        "TangentMode": 0,
+                        "Time": 120000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 132000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 144000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 151200,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 154800,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 163200,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0006944444612599909,
+                        "Interp": 2,
+                        "Leave": 0.0006944444612599909,
+                        "TangentMode": 0,
+                        "Time": 96000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0027083333116024733,
+                        "Interp": 2,
+                        "Leave": 0.0027083333116024733,
+                        "TangentMode": 0,
+                        "Time": 108000,
+                        "Value": 25.0
+                      },
+                      {
+                        "Arrive": 0.003541666781529784,
+                        "Interp": 2,
+                        "Leave": 0.003541666781529784,
+                        "TangentMode": 0,
+                        "Time": 120000,
+                        "Value": 65.0
+                      },
+                      {
+                        "Arrive": 0.0027083333116024733,
+                        "Interp": 2,
+                        "Leave": 0.0027083333116024733,
+                        "TangentMode": 0,
+                        "Time": 132000,
+                        "Value": 110.0
+                      },
+                      {
+                        "Arrive": 0.0007812500116415322,
+                        "Interp": 2,
+                        "Leave": 0.0007812500116415322,
+                        "TangentMode": 0,
+                        "Time": 144000,
+                        "Value": 130.0
+                      },
+                      {
+                        "Arrive": -0.00074074073927477,
+                        "Interp": 2,
+                        "Leave": -0.00074074073927477,
+                        "TangentMode": 0,
+                        "Time": 151200,
+                        "Value": 125.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 154800,
+                        "Value": 122.0
+                      },
+                      {
+                        "Arrive": 2.2522523067891598e-05,
+                        "Interp": 2,
+                        "Leave": 2.2522523067891598e-05,
+                        "TangentMode": 0,
+                        "Time": 163200,
+                        "Value": 125.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 125.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": -2.7777778086601757e-05,
+                        "Interp": 2,
+                        "Leave": -2.7777778086601757e-05,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": -2.0
+                      },
+                      {
+                        "Arrive": 0.00033333332976326346,
+                        "Interp": 2,
+                        "Leave": 0.00033333332976326346,
+                        "TangentMode": 0,
+                        "Time": 96000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0010000000474974513,
+                        "Interp": 2,
+                        "Leave": 0.0010000000474974513,
+                        "TangentMode": 0,
+                        "Time": 108000,
+                        "Value": 10.0
+                      },
+                      {
+                        "Arrive": 0.000750000006519258,
+                        "Interp": 2,
+                        "Leave": 0.000750000006519258,
+                        "TangentMode": 0,
+                        "Time": 120000,
+                        "Value": 24.0
+                      },
+                      {
+                        "Arrive": -0.0002500000118743628,
+                        "Interp": 2,
+                        "Leave": -0.0002500000118743628,
+                        "TangentMode": 0,
+                        "Time": 132000,
+                        "Value": 28.0
+                      },
+                      {
+                        "Arrive": -0.0017239582957699895,
+                        "Interp": 2,
+                        "Leave": -0.0017239582957699895,
+                        "TangentMode": 0,
+                        "Time": 144000,
+                        "Value": 18.0
+                      },
+                      {
+                        "Arrive": -0.0035231481306254864,
+                        "Interp": 2,
+                        "Leave": -0.0035231481306254864,
+                        "TangentMode": 0,
+                        "Time": 151200,
+                        "Value": -5.099999904632568
+                      },
+                      {
+                        "Arrive": -0.006241666618734598,
+                        "Interp": 2,
+                        "Leave": -0.006241666618734598,
+                        "TangentMode": 0,
+                        "Time": 154800,
+                        "Value": -20.049999237060547
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 163200,
+                        "Value": -80.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": -80.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "AStaticMeshActor",
+        "Guid": "1CEC1EA4000000000000000000000003",
+        "Name": "Clear_Shiba",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -33.0
+                      },
+                      {
+                        "Arrive": 0.0003055555571336299,
+                        "Interp": 2,
+                        "Leave": 0.0003055555571336299,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": -21.0
+                      },
+                      {
+                        "Arrive": 0.000375000003259629,
+                        "Interp": 2,
+                        "Leave": 0.000375000003259629,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": -11.0
+                      },
+                      {
+                        "Arrive": 0.0003009259235113859,
+                        "Interp": 2,
+                        "Leave": 0.0003009259235113859,
+                        "TangentMode": 0,
+                        "Time": 96000,
+                        "Value": -3.0
+                      },
+                      {
+                        "Arrive": 0.0001923076924867928,
+                        "Interp": 2,
+                        "Leave": 0.0001923076924867928,
+                        "TangentMode": 0,
+                        "Time": 115200,
+                        "Value": 2.0
+                      },
+                      {
+                        "Arrive": 7.812499825377017e-05,
+                        "Interp": 2,
+                        "Leave": 7.812499825377017e-05,
+                        "TangentMode": 0,
+                        "Time": 127200,
+                        "Value": 3.0
+                      },
+                      {
+                        "Arrive": 6.944444612599909e-05,
+                        "Interp": 2,
+                        "Leave": 6.944444612599909e-05,
+                        "TangentMode": 0,
+                        "Time": 134400,
+                        "Value": 3.5
+                      },
+                      {
+                        "Arrive": 2.380952901148703e-05,
+                        "Interp": 2,
+                        "Leave": 2.380952901148703e-05,
+                        "TangentMode": 0,
+                        "Time": 141600,
+                        "Value": 4.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 151200,
+                        "Value": 3.9000000953674316
+                      },
+                      {
+                        "Arrive": 6.944437700440176e-06,
+                        "Interp": 2,
+                        "Leave": 6.944437700440176e-06,
+                        "TangentMode": 0,
+                        "Time": 156000,
+                        "Value": 4.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 165600,
+                        "Value": 4.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 4.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -2.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": -2.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": -2.0
+                      },
+                      {
+                        "Arrive": 9.259259059035685e-06,
+                        "Interp": 2,
+                        "Leave": 9.259259059035685e-06,
+                        "TangentMode": 0,
+                        "Time": 96000,
+                        "Value": -2.0
+                      },
+                      {
+                        "Arrive": 2.8846152417827398e-05,
+                        "Interp": 2,
+                        "Leave": 2.8846152417827398e-05,
+                        "TangentMode": 0,
+                        "Time": 115200,
+                        "Value": -1.600000023841858
+                      },
+                      {
+                        "Arrive": 4.166666622040793e-05,
+                        "Interp": 2,
+                        "Leave": 4.166666622040793e-05,
+                        "TangentMode": 0,
+                        "Time": 127200,
+                        "Value": -1.100000023841858
+                      },
+                      {
+                        "Arrive": 5.555555617320351e-05,
+                        "Interp": 2,
+                        "Leave": 5.555555617320351e-05,
+                        "TangentMode": 0,
+                        "Time": 134400,
+                        "Value": -0.800000011920929
+                      },
+                      {
+                        "Arrive": 5.952380888629705e-05,
+                        "Interp": 2,
+                        "Leave": 5.952380888629705e-05,
+                        "TangentMode": 0,
+                        "Time": 141600,
+                        "Value": -0.30000001192092896
+                      },
+                      {
+                        "Arrive": -1.3888888133806176e-05,
+                        "Interp": 2,
+                        "Leave": -1.3888888133806176e-05,
+                        "TangentMode": 0,
+                        "Time": 151200,
+                        "Value": 0.20000000298023224
+                      },
+                      {
+                        "Arrive": -4.861110937781632e-05,
+                        "Interp": 2,
+                        "Leave": -4.861110937781632e-05,
+                        "TangentMode": 0,
+                        "Time": 156000,
+                        "Value": -0.5
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 165600,
+                        "Value": -0.5
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": -0.5
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 1.3888889043300878e-06,
+                        "Interp": 2,
+                        "Leave": 1.3888889043300878e-06,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": 0.10000000149011612
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 96000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 6.410256446542917e-06,
+                        "Interp": 2,
+                        "Leave": 6.410256446542917e-06,
+                        "TangentMode": 0,
+                        "Time": 115200,
+                        "Value": 0.10000000149011612
+                      },
+                      {
+                        "Arrive": 7.812500371073838e-06,
+                        "Interp": 2,
+                        "Leave": 7.812500371073838e-06,
+                        "TangentMode": 0,
+                        "Time": 127200,
+                        "Value": 0.20000000298023224
+                      },
+                      {
+                        "Arrive": -3.472222033451544e-06,
+                        "Interp": 2,
+                        "Leave": -3.472222033451544e-06,
+                        "TangentMode": 0,
+                        "Time": 134400,
+                        "Value": 0.25
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 141600,
+                        "Value": 0.15000000596046448
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 151200,
+                        "Value": 0.25
+                      },
+                      {
+                        "Arrive": -1.7361111531499773e-05,
+                        "Interp": 2,
+                        "Leave": -1.7361111531499773e-05,
+                        "TangentMode": 0,
+                        "Time": 156000,
+                        "Value": 0.15000000596046448
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 165600,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 96000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 115200,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 127200,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 134400,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 141600,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 151200,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 156000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 165600,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 96000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0025641026441007853,
+                        "Interp": 2,
+                        "Leave": 0.0025641026441007853,
+                        "TangentMode": 0,
+                        "Time": 115200,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.00989583320915699,
+                        "Interp": 2,
+                        "Leave": 0.00989583320915699,
+                        "TangentMode": 0,
+                        "Time": 127200,
+                        "Value": 80.0
+                      },
+                      {
+                        "Arrive": 0.01423611119389534,
+                        "Interp": 2,
+                        "Leave": 0.01423611119389534,
+                        "TangentMode": 0,
+                        "Time": 134400,
+                        "Value": 190.0
+                      },
+                      {
+                        "Arrive": 0.010119047947227955,
+                        "Interp": 2,
+                        "Leave": 0.010119047947227955,
+                        "TangentMode": 0,
+                        "Time": 141600,
+                        "Value": 285.0
+                      },
+                      {
+                        "Arrive": 0.0072916666977107525,
+                        "Interp": 2,
+                        "Leave": 0.0072916666977107525,
+                        "TangentMode": 0,
+                        "Time": 151200,
+                        "Value": 360.0
+                      },
+                      {
+                        "Arrive": 0.0013888889225199819,
+                        "Interp": 2,
+                        "Leave": 0.0013888889225199819,
+                        "TangentMode": 0,
+                        "Time": 156000,
+                        "Value": 390.0
+                      },
+                      {
+                        "Arrive": -7.575757626909763e-05,
+                        "Interp": 2,
+                        "Leave": -7.575757626909763e-05,
+                        "TangentMode": 0,
+                        "Time": 165600,
+                        "Value": 380.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 380.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": -0.0001851851848186925,
+                        "Interp": 2,
+                        "Leave": -0.0001851851848186925,
+                        "TangentMode": 0,
+                        "Time": 96000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": -0.0003846153849735856,
+                        "Interp": 2,
+                        "Leave": -0.0003846153849735856,
+                        "TangentMode": 0,
+                        "Time": 115200,
+                        "Value": -8.0
+                      },
+                      {
+                        "Arrive": -0.0003124999930150807,
+                        "Interp": 2,
+                        "Leave": -0.0003124999930150807,
+                        "TangentMode": 0,
+                        "Time": 127200,
+                        "Value": -12.0
+                      },
+                      {
+                        "Arrive": 0.00027777778450399637,
+                        "Interp": 2,
+                        "Leave": 0.00027777778450399637,
+                        "TangentMode": 0,
+                        "Time": 134400,
+                        "Value": -14.0
+                      },
+                      {
+                        "Arrive": 0.0001190476177725941,
+                        "Interp": 2,
+                        "Leave": 0.0001190476177725941,
+                        "TangentMode": 0,
+                        "Time": 141600,
+                        "Value": -8.0
+                      },
+                      {
+                        "Arrive": -0.0006944444612599909,
+                        "Interp": 2,
+                        "Leave": -0.0006944444612599909,
+                        "TangentMode": 0,
+                        "Time": 151200,
+                        "Value": -12.0
+                      },
+                      {
+                        "Arrive": -0.004065972287207842,
+                        "Interp": 2,
+                        "Leave": -0.004065972287207842,
+                        "TangentMode": 0,
+                        "Time": 156000,
+                        "Value": -18.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 165600,
+                        "Value": -70.55000305175781
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": -70.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "ACameraActor",
+        "Guid": "1CEC1EA4000000000000000000000004",
+        "Name": "Clear_CameraFollow",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -10.0
+                      },
+                      {
+                        "Arrive": 6.25000029685907e-05,
+                        "Interp": 2,
+                        "Leave": 6.25000029685907e-05,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 8.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 8.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -13.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": -13.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": -13.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 4.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 4.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 4.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 17.142982482910156
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 17.142982482910156
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 17.142982482910156
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 95.7105941772461
+                      },
+                      {
+                        "Arrive": -3.9656904846196994e-05,
+                        "Interp": 2,
+                        "Leave": -3.9656904846196994e-05,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 84.2894058227539
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 84.2894058227539
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 48000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          },
+          {
+            "Class": "UMovieSceneFloatTrack",
+            "EvalDisabled": false,
+            "PropertyName": "FieldOfView",
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 55.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 55.0
+                      }
+                    ]
+                  }
+                ],
+                "Class": "UMovieSceneFloatSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "ACameraActor",
+        "Guid": "1CEC1EA4000000000000000000000005",
+        "Name": "Clear_CameraPursuit",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 13.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 13.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -18.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": -18.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 8.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 8.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 14.587664604187012
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 14.587664604187012
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 128.2901611328125
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 128.2901611328125
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          },
+          {
+            "Class": "UMovieSceneFloatTrack",
+            "EvalDisabled": false,
+            "PropertyName": "FieldOfView",
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 58.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 58.0
+                      }
+                    ]
+                  }
+                ],
+                "Class": "UMovieSceneFloatSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "ACameraActor",
+        "Guid": "1CEC1EA4000000000000000000000006",
+        "Name": "Clear_CameraReaction",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 15.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 15.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -7.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": -7.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 2.700000047683716
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 2.700000047683716
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 14.868744850158691
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 14.868744850158691
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 141.34019470214844
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 141.34019470214844
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          },
+          {
+            "Class": "UMovieSceneFloatTrack",
+            "EvalDisabled": false,
+            "PropertyName": "FieldOfView",
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 48.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 48.0
+                      }
+                    ]
+                  }
+                ],
+                "Class": "UMovieSceneFloatSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "ACameraActor",
+        "Guid": "1CEC1EA4000000000000000000000007",
+        "Name": "Clear_CameraResult",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 17.0
+                      },
+                      {
+                        "Arrive": 1.4492753507511225e-05,
+                        "Interp": 2,
+                        "Leave": 1.4492753507511225e-05,
+                        "TangentMode": 0,
+                        "Time": 216000,
+                        "Value": 17.0
+                      },
+                      {
+                        "Arrive": 5.555555617320351e-05,
+                        "Interp": 2,
+                        "Leave": 5.555555617320351e-05,
+                        "TangentMode": 0,
+                        "Time": 276000,
+                        "Value": 21.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 21.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -17.0
+                      },
+                      {
+                        "Arrive": -2.5362318410770968e-05,
+                        "Interp": 2,
+                        "Leave": -2.5362318410770968e-05,
+                        "TangentMode": 0,
+                        "Time": 216000,
+                        "Value": -17.0
+                      },
+                      {
+                        "Arrive": -9.722221875563264e-05,
+                        "Interp": 2,
+                        "Leave": -9.722221875563264e-05,
+                        "TangentMode": 0,
+                        "Time": 276000,
+                        "Value": -24.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": -24.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 9.0
+                      },
+                      {
+                        "Arrive": 1.0869564903259743e-05,
+                        "Interp": 2,
+                        "Leave": 1.0869564903259743e-05,
+                        "TangentMode": 0,
+                        "Time": 216000,
+                        "Value": 9.0
+                      },
+                      {
+                        "Arrive": 4.166666622040793e-05,
+                        "Interp": 2,
+                        "Leave": 4.166666622040793e-05,
+                        "TangentMode": 0,
+                        "Time": 276000,
+                        "Value": 12.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 12.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 23.115625381469727
+                      },
+                      {
+                        "Arrive": -4.758406248583924e-06,
+                        "Interp": 2,
+                        "Leave": -4.758406248583924e-06,
+                        "TangentMode": 0,
+                        "Time": 216000,
+                        "Value": 23.115625381469727
+                      },
+                      {
+                        "Arrive": -1.8240558347315527e-05,
+                        "Interp": 2,
+                        "Leave": -1.8240558347315527e-05,
+                        "TangentMode": 0,
+                        "Time": 276000,
+                        "Value": 21.802305221557617
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 21.802305221557617
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 141.8427734375
+                      },
+                      {
+                        "Arrive": -7.99748522695154e-06,
+                        "Interp": 2,
+                        "Leave": -7.99748522695154e-06,
+                        "TangentMode": 0,
+                        "Time": 216000,
+                        "Value": 141.8427734375
+                      },
+                      {
+                        "Arrive": -3.065702549065463e-05,
+                        "Interp": 2,
+                        "Leave": -3.065702549065463e-05,
+                        "TangentMode": 0,
+                        "Time": 276000,
+                        "Value": 139.63546752929688
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 139.63546752929688
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 216000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 276000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 1.0
+                      }
+                    ]
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          },
+          {
+            "Class": "UMovieSceneFloatTrack",
+            "EvalDisabled": false,
+            "PropertyName": "FieldOfView",
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 55.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 288000,
+                        "Value": 55.0
+                      }
+                    ]
+                  }
+                ],
+                "Class": "UMovieSceneFloatSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "CameraCutTrack": {
+      "BlendTime": 0.0,
+      "CanBlend": false,
+      "Class": "UMovieSceneCameraCutTrack",
+      "EvalDisabled": false,
+      "Sections": [
+        {
+          "Active": true,
+          "Camera": "1CEC1EA4000000000000000000000004",
+          "Channels": [],
+          "Class": "UMovieSceneCameraCutSection",
+          "Completion": 2,
+          "End": 48000,
+          "Start": 0
+        },
+        {
+          "Active": true,
+          "Camera": "1CEC1EA4000000000000000000000005",
+          "Channels": [],
+          "Class": "UMovieSceneCameraCutSection",
+          "Completion": 2,
+          "End": 168000,
+          "Start": 48000
+        },
+        {
+          "Active": true,
+          "Camera": "1CEC1EA4000000000000000000000006",
+          "Channels": [],
+          "Class": "UMovieSceneCameraCutSection",
+          "Completion": 2,
+          "End": 216000,
+          "Start": 168000
+        },
+        {
+          "Active": true,
+          "Camera": "1CEC1EA4000000000000000000000007",
+          "Channels": [],
+          "Class": "UMovieSceneCameraCutSection",
+          "Completion": 2,
+          "End": 288000,
+          "Start": 216000
+        }
+      ]
+    },
+    "DisplayRate": [
+      30,
+      1
+    ],
+    "PlaybackEnd": 288000,
+    "PlaybackStart": 0,
+    "TickResolution": [
+      24000,
+      1
+    ],
+    "Tracks": [
+      {
+        "Class": "UMovieSceneFadeTrack",
+        "EvalDisabled": false,
+        "Sections": [
+          {
+            "Active": true,
+            "Channels": [
+              {
+                "Keys": [
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 0,
+                    "Value": 1.0
+                  },
+                  {
+                    "Arrive": -3.4722222608252196e-06,
+                    "Interp": 2,
+                    "Leave": -3.4722222608252196e-06,
+                    "TangentMode": 0,
+                    "Time": 16800,
+                    "Value": 0.0
+                  },
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 288000,
+                    "Value": 0.0
+                  }
+                ]
+              }
+            ],
+            "Class": "UMovieSceneFadeSection",
+            "Completion": 2,
+            "FadeAudio": false,
+            "FadeColor": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "UMovieSceneCameraOverlayTrack",
+        "EvalDisabled": false,
+        "Sections": [
+          {
+            "Active": true,
+            "Channels": [
+              {
+                "Keys": [
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 0,
+                    "Value": 1.0
+                  },
+                  {
+                    "Arrive": -3.623188376877806e-06,
+                    "Interp": 2,
+                    "Leave": -3.623188376877806e-06,
+                    "TangentMode": 0,
+                    "Time": 216000,
+                    "Value": 1.0
+                  },
+                  {
+                    "Arrive": -1.3888889043300878e-05,
+                    "Interp": 2,
+                    "Leave": -1.3888889043300878e-05,
+                    "TangentMode": 0,
+                    "Time": 276000,
+                    "Value": 0.0
+                  },
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 288000,
+                    "Value": 0.0
+                  }
+                ]
+              },
+              {
+                "Keys": [
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 0,
+                    "Value": 0.18000000715255737
+                  },
+                  {
+                    "Arrive": -2.898550803820399e-07,
+                    "Interp": 2,
+                    "Leave": -2.898550803820399e-07,
+                    "TangentMode": 0,
+                    "Time": 216000,
+                    "Value": 0.18000000715255737
+                  },
+                  {
+                    "Arrive": -1.1111111462014378e-06,
+                    "Interp": 2,
+                    "Leave": -1.1111111462014378e-06,
+                    "TangentMode": 0,
+                    "Time": 276000,
+                    "Value": 0.10000000149011612
+                  },
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 288000,
+                    "Value": 0.10000000149011612
+                  }
+                ]
+              }
+            ],
+            "Class": "UMovieSceneCameraOverlaySection",
+            "Completion": 2,
+            "LetterboxAspect": 2.390000104904175
+          }
+        ]
+      }
+    ]
+  },
+  "Type": "LevelSequence"
+}

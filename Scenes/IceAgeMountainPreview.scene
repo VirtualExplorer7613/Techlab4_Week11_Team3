@@ -1,0 +1,311 @@
+{
+  "Version": 4,
+  "World": {
+    "PersistentLevel": {
+      "Actors": [
+        {
+          "Class": "AActor",
+          "Components": [
+            {
+              "Class": "USceneComponent",
+              "Name": "DefaultSceneRoot",
+              "Parent": "",
+              "Properties": {
+                "Transform": {
+                  "Location": {
+                    "X": 75.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                  },
+                  "Rotation": {
+                    "Pitch": 0.0,
+                    "Roll": 0.0,
+                    "Yaw": 0.0
+                  },
+                  "Scale": {
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                  }
+                },
+                "bAutoActivate": true,
+                "bHiddenInGame": false,
+                "bVisible": true
+              }
+            },
+            {
+              "Class": "UStaticMeshComponent",
+              "Name": "Mountain",
+              "OverrideMaterials": [
+                {
+                  "Base": "DefaultMaterial",
+                  "Instance": {
+                    "BaseColor": {
+                      "W": 1.0,
+                      "X": 1,
+                      "Y": 1,
+                      "Z": 1
+                    },
+                    "BlendState": "Opaque",
+                    "FlipNormalY": false,
+                    "PSOType": 0,
+                    "Properties": {},
+                    "SamplerState": "LinearClamp",
+                    "Shininess": 12,
+                    "SpecularColor": {
+                      "X": 0.08,
+                      "Y": 0.09,
+                      "Z": 0.1
+                    },
+                    "Textures": [
+                      "Assets/Models/IceAgeMountain/Mountain_Albedo.png",
+                      "FlatNormalTexture"
+                    ],
+                    "UVScrollSpeed": [
+                      0.0,
+                      0.0
+                    ]
+                  }
+                }
+              ],
+              "Parent": "DefaultSceneRoot",
+              "Properties": {
+                "StaticMesh": "Models/IceAgeMountain/IceAgeMountain_HQ.obj",
+                "Transform": {
+                  "Location": {
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                  },
+                  "Rotation": {
+                    "Pitch": 0.0,
+                    "Roll": 0.0,
+                    "Yaw": 0.0
+                  },
+                  "Scale": {
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                  }
+                },
+                "bAutoActivate": true,
+                "bBlockComponent": false,
+                "bCastShadow": true,
+                "bGenerateOverlapEvents": false,
+                "bHiddenInGame": false,
+                "bReceiveShadow": true,
+                "bVisible": true
+              }
+            }
+          ],
+          "Name": "IceAgeMountain_HQ",
+          "Properties": {
+            "ScriptPath": "",
+            "bActorEnableCollision": false
+          }
+        },
+        {
+          "Class": "AActor",
+          "Components": [
+            {
+              "Class": "USceneComponent",
+              "Name": "DefaultSceneRoot",
+              "Parent": "",
+              "Properties": {
+                "Transform": {
+                  "Location": {
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                  },
+                  "Rotation": {
+                    "Pitch": 0.0,
+                    "Roll": 0.0,
+                    "Yaw": 0.0
+                  },
+                  "Scale": {
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                  }
+                },
+                "bAutoActivate": true,
+                "bHiddenInGame": false,
+                "bVisible": true
+              }
+            },
+            {
+              "Class": "UDirectionalLightComponent",
+              "Name": "Mountain_Sun",
+              "Parent": "DefaultSceneRoot",
+              "Properties": {
+                "LightColor": 4294967295,
+                "bAutoActivate": true,
+                "bCastShadows": true,
+                "bHiddenInGame": false,
+                "bVisible": true,
+                "Intensity": 1.6,
+                "AngularRadiusDegrees": 3.0,
+                "Transform": {
+                  "Location": {
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                  },
+                  "Rotation": {
+                    "Pitch": 48,
+                    "Roll": 0.0,
+                    "Yaw": 35
+                  },
+                  "Scale": {
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                  }
+                }
+              }
+            }
+          ],
+          "Name": "Mountain_Sun",
+          "Properties": {
+            "ScriptPath": "",
+            "bActorEnableCollision": false
+          }
+        },
+        {
+          "Class": "AActor",
+          "Components": [
+            {
+              "Class": "USceneComponent",
+              "Name": "DefaultSceneRoot",
+              "Parent": "",
+              "Properties": {
+                "Transform": {
+                  "Location": {
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                  },
+                  "Rotation": {
+                    "Pitch": 0.0,
+                    "Roll": 0.0,
+                    "Yaw": 0.0
+                  },
+                  "Scale": {
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                  }
+                },
+                "bAutoActivate": true,
+                "bHiddenInGame": false,
+                "bVisible": true
+              }
+            },
+            {
+              "Class": "USkyLightComponent",
+              "Name": "Mountain_SkyFill",
+              "Parent": "DefaultSceneRoot",
+              "Properties": {
+                "LightColor": 4294967295,
+                "bAutoActivate": true,
+                "bCastShadows": true,
+                "bHiddenInGame": false,
+                "bVisible": true,
+                "Intensity": 0.35,
+                "Transform": {
+                  "Location": {
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                  },
+                  "Rotation": {
+                    "Pitch": 0.0,
+                    "Roll": 0.0,
+                    "Yaw": 0.0
+                  },
+                  "Scale": {
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                  }
+                }
+              }
+            }
+          ],
+          "Name": "Mountain_SkyFill",
+          "Properties": {
+            "ScriptPath": "",
+            "bActorEnableCollision": false
+          }
+        },
+        {
+          "Class": "APawn",
+          "Components": [
+            {
+              "Class": "USceneComponent",
+              "Name": "DefaultSceneRoot",
+              "Parent": "",
+              "Properties": {
+                "Transform": {
+                  "Location": {
+                    "X": -120.0,
+                    "Y": 0.0,
+                    "Z": 45.0
+                  },
+                  "Rotation": {
+                    "Pitch": 0.0,
+                    "Roll": 0.0,
+                    "Yaw": 0.0
+                  },
+                  "Scale": {
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                  }
+                },
+                "bAutoActivate": true,
+                "bHiddenInGame": false,
+                "bVisible": true
+              }
+            },
+            {
+              "Class": "UCameraComponent",
+              "Name": "MountainCamera",
+              "Parent": "DefaultSceneRoot",
+              "Properties": {
+                "Transform": {
+                  "Location": {
+                    "X": 0.0,
+                    "Y": 0.0,
+                    "Z": 0.0
+                  },
+                  "Rotation": {
+                    "Pitch": 8,
+                    "Roll": 0.0,
+                    "Yaw": 0
+                  },
+                  "Scale": {
+                    "X": 1.0,
+                    "Y": 1.0,
+                    "Z": 1.0
+                  }
+                },
+                "bAutoActivate": true,
+                "bHiddenInGame": false,
+                "bVisible": true
+              }
+            }
+          ],
+          "Name": "MountainPreviewCamera",
+          "Properties": {
+            "ScriptPath": "",
+            "bActorEnableCollision": false
+          }
+        }
+      ],
+      "Properties": {}
+    },
+    "Properties": {}
+  }
+}

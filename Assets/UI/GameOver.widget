@@ -1,0 +1,112 @@
+{
+  "DesignSize": [
+    1920,
+    1080
+  ],
+  "ParentClass": "UUserWidget",
+  "Root": {
+    "Children": [
+      {
+        "Children": [
+          {
+            "Class": "UTextBlock",
+            "Properties": {
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Anchors": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "ColorAndOpacity": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "FontPath": "Assets/Fonts/Pretendard.json",
+              "FontSize": 81.5,
+              "Justification": 0,
+              "Offsets": [
+                117.0311279296875,
+                1.319854736328125,
+                406.64776611328125,
+                169.79635620117188
+              ],
+              "RenderOpacity": 1.0,
+              "Text": "GameOver",
+              "Visibility": 0,
+              "WidgetName": "TextBlock139",
+              "ZOrder": 0,
+              "bAutoSize": false
+            }
+          }
+        ],
+        "Class": "UButton",
+        "Properties": {
+          "AlignmentX": 0.0,
+          "AlignmentY": 0.0,
+          "Anchors": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "HoveredColor": [
+            0.0,
+            0.41666674613952637,
+            1.0,
+            0.949999988079071
+          ],
+          "NormalColor": [
+            0.11999999731779099,
+            0.15000000596046448,
+            0.20000000298023224,
+            0.8999999761581421
+          ],
+          "Offsets": [
+            586.4776611328125,
+            504.820068359375,
+            654.852783203125,
+            182.84625244140625
+          ],
+          "PressedColor": [
+            0.8500000238418579,
+            0.550000011920929,
+            0.10000000149011612,
+            1.0
+          ],
+          "RenderOpacity": 1.0,
+          "Visibility": 0,
+          "WidgetName": "MyButton",
+          "ZOrder": 0,
+          "bAutoSize": false
+        }
+      }
+    ],
+    "Class": "UCanvasPanel",
+    "Properties": {
+      "AlignmentX": 0.0,
+      "AlignmentY": 0.0,
+      "Anchors": [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "Offsets": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "RenderOpacity": 1.0,
+      "Visibility": 0,
+      "WidgetName": "Root",
+      "ZOrder": 0,
+      "bAutoSize": false
+    }
+  },
+  "Version": 1
+}

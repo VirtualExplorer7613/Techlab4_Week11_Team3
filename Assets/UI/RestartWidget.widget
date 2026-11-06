@@ -1,0 +1,250 @@
+{
+  "DesignSize": [
+    1920,
+    1080
+  ],
+  "ParentClass": "UUserWidget",
+  "Root": {
+    "Children": [
+      {
+        "Children": [
+          {
+            "Class": "UTextBlock",
+            "Properties": {
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Anchors": [
+                0.5,
+                0.0,
+                0.5,
+                0.0
+              ],
+              "ColorAndOpacity": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "FontPath": "Assets/Fonts/Pretendard.json",
+              "FontSize": 64.0,
+              "Justification": 1,
+              "Offsets": [
+                -125.0,
+                0.0,
+                250.0,
+                100.0
+              ],
+              "RenderOpacity": 1.0,
+              "Text": "실패!",
+              "Visibility": 0,
+              "WidgetName": "TextLabel",
+              "ZOrder": 0,
+              "bAutoSize": false
+            }
+          },
+          {
+            "Children": [
+              {
+                "Class": "UTextBlock",
+                "Properties": {
+                  "AlignmentX": 0.0,
+                  "AlignmentY": 0.0,
+                  "Anchors": [
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5
+                  ],
+                  "ColorAndOpacity": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ],
+                  "FontPath": "Assets/Fonts/Pretendard.json",
+                  "FontSize": 60.0,
+                  "Justification": 1,
+                  "Offsets": [
+                    -200.0,
+                    -75.0,
+                    400.0,
+                    150.0
+                  ],
+                  "RenderOpacity": 1.0,
+                  "Text": "다시 시작",
+                  "Visibility": 0,
+                  "WidgetName": "RestartLabel",
+                  "ZOrder": 0,
+                  "bAutoSize": false
+                }
+              }
+            ],
+            "Class": "UButton",
+            "Properties": {
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Anchors": [
+                0.5,
+                0.0,
+                0.5,
+                0.0
+              ],
+              "HoveredColor": [
+                0.20000000298023224,
+                0.25,
+                0.3199999928474426,
+                0.949999988079071
+              ],
+              "NormalColor": [
+                0.11999999731779099,
+                0.15000000596046448,
+                0.20000000298023224,
+                0.8999999761581421
+              ],
+              "Offsets": [
+                -200.0,
+                150.0,
+                400.0,
+                150.0
+              ],
+              "PressedColor": [
+                0.8500000238418579,
+                0.550000011920929,
+                0.10000000149011612,
+                1.0
+              ],
+              "RenderOpacity": 1.0,
+              "Visibility": 0,
+              "WidgetName": "RestartButton",
+              "ZOrder": 0,
+              "bAutoSize": false
+            }
+          },
+          {
+            "Children": [
+              {
+                "Class": "UTextBlock",
+                "Properties": {
+                  "AlignmentX": 0.0,
+                  "AlignmentY": 0.0,
+                  "Anchors": [
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0
+                  ],
+                  "ColorAndOpacity": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                  ],
+                  "FontPath": "Assets/Fonts/Pretendard.json",
+                  "FontSize": 60.0,
+                  "Justification": 1,
+                  "Offsets": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                  ],
+                  "RenderOpacity": 1.0,
+                  "Text": "타이틀로",
+                  "Visibility": 0,
+                  "WidgetName": "TitleLabel",
+                  "ZOrder": 0,
+                  "bAutoSize": true
+                }
+              }
+            ],
+            "Class": "UButton",
+            "Properties": {
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Anchors": [
+                0.5,
+                0.0,
+                0.5,
+                0.0
+              ],
+              "HoveredColor": [
+                0.20000000298023224,
+                0.25,
+                0.3199999928474426,
+                0.949999988079071
+              ],
+              "NormalColor": [
+                0.11999999731779099,
+                0.15000000596046448,
+                0.20000000298023224,
+                0.8999999761581421
+              ],
+              "Offsets": [
+                -200.0,
+                350.0,
+                400.0,
+                150.0
+              ],
+              "PressedColor": [
+                0.8500000238418579,
+                0.550000011920929,
+                0.10000000149011612,
+                1.0
+              ],
+              "RenderOpacity": 1.0,
+              "Visibility": 0,
+              "WidgetName": "TitleButton",
+              "ZOrder": 0,
+              "bAutoSize": false
+            }
+          }
+        ],
+        "Class": "UCanvasPanel",
+        "Properties": {
+          "AlignmentX": 0.0,
+          "AlignmentY": 0.0,
+          "Anchors": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "Offsets": [
+            -400.0,
+            -200.0,
+            800.0,
+            600.0
+          ],
+          "RenderOpacity": 1.0,
+          "Visibility": 0,
+          "WidgetName": "CanvasPanel159",
+          "ZOrder": 0,
+          "bAutoSize": false
+        }
+      }
+    ],
+    "Class": "UCanvasPanel",
+    "Properties": {
+      "AlignmentX": 0.0,
+      "AlignmentY": 0.0,
+      "Anchors": [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "Offsets": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "RenderOpacity": 1.0,
+      "Visibility": 0,
+      "WidgetName": "Root",
+      "ZOrder": 0,
+      "bAutoSize": false
+    }
+  },
+  "Version": 1
+}

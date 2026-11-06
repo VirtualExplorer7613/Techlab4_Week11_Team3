@@ -1,0 +1,64 @@
+{
+  "assets": [
+    {
+      "file": "IceAgeMountain_HQ.obj",
+      "vertices": 79282,
+      "triangles": 158560,
+      "bounds_min": [
+        -93.21875,
+        -73.59375,
+        -2.0
+      ],
+      "bounds_max": [
+        93.21875,
+        73.59375,
+        72.70582580566406
+      ],
+      "closed_manifold": true,
+      "material_sections": 1,
+      "uv_channels": 1
+    },
+    {
+      "file": "IceAgeMountain_Medium.obj",
+      "vertices": 19822,
+      "triangles": 39640,
+      "bounds_min": [
+        -93.21875762939453,
+        -73.59375762939453,
+        -2.0
+      ],
+      "bounds_max": [
+        93.21875762939453,
+        73.59375762939453,
+        72.70582580566406
+      ],
+      "closed_manifold": true,
+      "material_sections": 1,
+      "uv_channels": 1
+    },
+    {
+      "file": "IceAgeMountain_Far.obj",
+      "vertices": 4957,
+      "triangles": 9910,
+      "bounds_min": [
+        -93.21875762939453,
+        -73.59375762939453,
+        -2.0
+      ],
+      "bounds_max": [
+        93.21875762939453,
+        73.59375762939453,
+        72.74738311767578
+      ],
+      "closed_manifold": true,
+      "material_sections": 1,
+      "uv_channels": 1
+    }
+  ],
+  "albedo": [
+    2048,
+    2048
+  ],
+  "engine_axis": "Z-up / X-forward, inverse ObjImporter transform used",
+  "lod_mode": "separate manually selectable meshes, not an automatic LOD chain"
+}

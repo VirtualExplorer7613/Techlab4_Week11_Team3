@@ -1,0 +1,112 @@
+{
+  "DesignSize": [
+    1920,
+    1080
+  ],
+  "ParentClass": "UUserWidget",
+  "Root": {
+    "Children": [
+      {
+        "Children": [
+          {
+            "Class": "UTextBlock",
+            "Properties": {
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Anchors": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "ColorAndOpacity": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              "FontPath": "Assets/Fonts/Pretendard.json",
+              "FontSize": 52.70000076293945,
+              "Justification": 1,
+              "Offsets": [
+                40.0,
+                40.0,
+                492.5731201171875,
+                51.897064208984375
+              ],
+              "RenderOpacity": 1.0,
+              "Text": "구민상",
+              "Visibility": 0,
+              "WidgetName": "TextBlock140",
+              "ZOrder": 0,
+              "bAutoSize": false
+            }
+          }
+        ],
+        "Class": "UButton",
+        "Properties": {
+          "AlignmentX": 0.0,
+          "AlignmentY": 0.0,
+          "Anchors": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "HoveredColor": [
+            0.20000000298023224,
+            0.25,
+            0.3199999928474426,
+            0.949999988079071
+          ],
+          "NormalColor": [
+            0.11999999731779099,
+            0.15000000596046448,
+            0.20000000298023224,
+            0.8999999761581421
+          ],
+          "Offsets": [
+            520.3812866210938,
+            399.9046936035156,
+            591.056396484375,
+            124.55126953125
+          ],
+          "PressedColor": [
+            0.8500000238418579,
+            0.550000011920929,
+            0.10000000149011612,
+            1.0
+          ],
+          "RenderOpacity": 1.0,
+          "Visibility": 0,
+          "WidgetName": "MinsangButton",
+          "ZOrder": 0,
+          "bAutoSize": false
+        }
+      }
+    ],
+    "Class": "UCanvasPanel",
+    "Properties": {
+      "AlignmentX": 0.0,
+      "AlignmentY": 0.0,
+      "Anchors": [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "Offsets": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "RenderOpacity": 1.0,
+      "Visibility": 0,
+      "WidgetName": "Root",
+      "ZOrder": 0,
+      "bAutoSize": false
+    }
+  },
+  "Version": 1
+}

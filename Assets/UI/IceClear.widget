@@ -1,0 +1,581 @@
+{
+  "Version": 1,
+  "DesignSize": [
+    1920,
+    1080
+  ],
+  "ParentClass": "UUserWidget",
+  "Root": {
+    "Class": "UCanvasPanel",
+    "Properties": {
+      "WidgetName": "Root",
+      "Anchors": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "Offsets": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "AlignmentX": 0.0,
+      "AlignmentY": 0.0,
+      "Visibility": 0,
+      "RenderOpacity": 1.0,
+      "ZOrder": 0,
+      "bAutoSize": false
+    },
+    "Children": [
+      {
+        "Class": "UCanvasPanel",
+        "Properties": {
+          "WidgetName": "ResultPanel",
+          "Anchors": [
+            1,
+            0.5,
+            1,
+            0.5
+          ],
+          "Offsets": [
+            -670,
+            -320,
+            550,
+            640
+          ],
+          "AlignmentX": 0.0,
+          "AlignmentY": 0.0,
+          "Visibility": 1,
+          "RenderOpacity": 1.0,
+          "ZOrder": 5,
+          "bAutoSize": false
+        },
+        "Children": [
+          {
+            "Class": "UImage",
+            "Properties": {
+              "WidgetName": "ResultBackdrop",
+              "Anchors": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "Offsets": [
+                0,
+                0,
+                550,
+                640
+              ],
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Visibility": 0,
+              "RenderOpacity": 1.0,
+              "ZOrder": -2,
+              "bAutoSize": false,
+              "TexturePath": "",
+              "ColorAndOpacity": [
+                0.045,
+                0.065,
+                0.1,
+                0.94
+              ]
+            }
+          },
+          {
+            "Class": "UImage",
+            "Properties": {
+              "WidgetName": "ResultAccent",
+              "Anchors": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "Offsets": [
+                0,
+                0,
+                550,
+                5
+              ],
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Visibility": 0,
+              "RenderOpacity": 1.0,
+              "ZOrder": -1,
+              "bAutoSize": false,
+              "TexturePath": "",
+              "ColorAndOpacity": [
+                0.58,
+                0.84,
+                0.92,
+                1
+              ]
+            }
+          },
+          {
+            "Class": "UTextBlock",
+            "Properties": {
+              "WidgetName": "ClearTitle",
+              "Anchors": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "Offsets": [
+                48,
+                36,
+                454,
+                90
+              ],
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Visibility": 0,
+              "RenderOpacity": 1.0,
+              "ZOrder": 0,
+              "bAutoSize": false,
+              "Text": "클리어!",
+              "FontPath": "Assets/Fonts/Pretendard.json",
+              "FontSize": 72,
+              "ColorAndOpacity": [
+                1,
+                1,
+                1,
+                1
+              ],
+              "Justification": 0
+            }
+          },
+          {
+            "Class": "UTextBlock",
+            "Properties": {
+              "WidgetName": "ClearSubtitle",
+              "Anchors": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "Offsets": [
+                48,
+                126,
+                454,
+                42
+              ],
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Visibility": 0,
+              "RenderOpacity": 1.0,
+              "ZOrder": 0,
+              "bAutoSize": false,
+              "Text": "빙판 탈출 성공",
+              "FontPath": "Assets/Fonts/Pretendard.json",
+              "FontSize": 28,
+              "ColorAndOpacity": [
+                0.72,
+                0.8,
+                0.88,
+                1
+              ],
+              "Justification": 0
+            }
+          },
+          {
+            "Class": "UImage",
+            "Properties": {
+              "WidgetName": "ResultDivider",
+              "Anchors": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "Offsets": [
+                48,
+                188,
+                454,
+                2
+              ],
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Visibility": 0,
+              "RenderOpacity": 1.0,
+              "ZOrder": 0,
+              "bAutoSize": false,
+              "TexturePath": "",
+              "ColorAndOpacity": [
+                0.48,
+                0.6,
+                0.72,
+                0.35
+              ]
+            }
+          },
+          {
+            "Class": "UTextBlock",
+            "Properties": {
+              "WidgetName": "TimeLabel",
+              "Anchors": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "Offsets": [
+                48,
+                226,
+                170,
+                48
+              ],
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Visibility": 0,
+              "RenderOpacity": 1.0,
+              "ZOrder": 0,
+              "bAutoSize": false,
+              "Text": "걸린 시간",
+              "FontPath": "Assets/Fonts/Pretendard.json",
+              "FontSize": 30,
+              "ColorAndOpacity": [
+                0.72,
+                0.8,
+                0.88,
+                1
+              ],
+              "Justification": 0
+            }
+          },
+          {
+            "Class": "UTextBlock",
+            "Properties": {
+              "WidgetName": "TimeValue",
+              "Anchors": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "Offsets": [
+                218,
+                218,
+                284,
+                60
+              ],
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Visibility": 0,
+              "RenderOpacity": 1.0,
+              "ZOrder": 0,
+              "bAutoSize": false,
+              "Text": "—",
+              "FontPath": "Assets/Fonts/Pretendard.json",
+              "FontSize": 40,
+              "ColorAndOpacity": [
+                1,
+                1,
+                1,
+                1
+              ],
+              "Justification": 2
+            }
+          },
+          {
+            "Class": "UTextBlock",
+            "Properties": {
+              "WidgetName": "DeathLabel",
+              "Anchors": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "Offsets": [
+                48,
+                300,
+                170,
+                48
+              ],
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Visibility": 0,
+              "RenderOpacity": 1.0,
+              "ZOrder": 0,
+              "bAutoSize": false,
+              "Text": "사망 횟수",
+              "FontPath": "Assets/Fonts/Pretendard.json",
+              "FontSize": 30,
+              "ColorAndOpacity": [
+                0.72,
+                0.8,
+                0.88,
+                1
+              ],
+              "Justification": 0
+            }
+          },
+          {
+            "Class": "UTextBlock",
+            "Properties": {
+              "WidgetName": "DeathValue",
+              "Anchors": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "Offsets": [
+                218,
+                292,
+                284,
+                60
+              ],
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Visibility": 0,
+              "RenderOpacity": 1.0,
+              "ZOrder": 0,
+              "bAutoSize": false,
+              "Text": "—",
+              "FontPath": "Assets/Fonts/Pretendard.json",
+              "FontSize": 40,
+              "ColorAndOpacity": [
+                1,
+                1,
+                1,
+                1
+              ],
+              "Justification": 2
+            }
+          },
+          {
+            "Class": "UButton",
+            "Properties": {
+              "WidgetName": "RestartButton",
+              "Anchors": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "Offsets": [
+                48,
+                404,
+                454,
+                84
+              ],
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Visibility": 0,
+              "RenderOpacity": 1.0,
+              "ZOrder": 0,
+              "bAutoSize": false,
+              "NormalColor": [
+                0.12,
+                0.15,
+                0.2,
+                0.95
+              ],
+              "HoveredColor": [
+                0.2,
+                0.25,
+                0.32,
+                1.0
+              ],
+              "PressedColor": [
+                0.85,
+                0.55,
+                0.1,
+                1.0
+              ]
+            },
+            "Children": [
+              {
+                "Class": "UTextBlock",
+                "Properties": {
+                  "WidgetName": "RestartButtonLabel",
+                  "Anchors": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "Offsets": [
+                    0,
+                    20,
+                    454,
+                    48
+                  ],
+                  "AlignmentX": 0.0,
+                  "AlignmentY": 0.0,
+                  "Visibility": 0,
+                  "RenderOpacity": 1.0,
+                  "ZOrder": 0,
+                  "bAutoSize": false,
+                  "Text": "다시 시작",
+                  "FontPath": "Assets/Fonts/Pretendard.json",
+                  "FontSize": 36,
+                  "ColorAndOpacity": [
+                    1,
+                    1,
+                    1,
+                    1
+                  ],
+                  "Justification": 1
+                }
+              }
+            ]
+          },
+          {
+            "Class": "UButton",
+            "Properties": {
+              "WidgetName": "TitleButton",
+              "Anchors": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "Offsets": [
+                48,
+                508,
+                454,
+                84
+              ],
+              "AlignmentX": 0.0,
+              "AlignmentY": 0.0,
+              "Visibility": 0,
+              "RenderOpacity": 1.0,
+              "ZOrder": 0,
+              "bAutoSize": false,
+              "NormalColor": [
+                0.12,
+                0.15,
+                0.2,
+                0.95
+              ],
+              "HoveredColor": [
+                0.2,
+                0.25,
+                0.32,
+                1.0
+              ],
+              "PressedColor": [
+                0.85,
+                0.55,
+                0.1,
+                1.0
+              ]
+            },
+            "Children": [
+              {
+                "Class": "UTextBlock",
+                "Properties": {
+                  "WidgetName": "TitleButtonLabel",
+                  "Anchors": [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  "Offsets": [
+                    0,
+                    20,
+                    454,
+                    48
+                  ],
+                  "AlignmentX": 0.0,
+                  "AlignmentY": 0.0,
+                  "Visibility": 0,
+                  "RenderOpacity": 1.0,
+                  "ZOrder": 0,
+                  "bAutoSize": false,
+                  "Text": "타이틀로",
+                  "FontPath": "Assets/Fonts/Pretendard.json",
+                  "FontSize": 36,
+                  "ColorAndOpacity": [
+                    1,
+                    1,
+                    1,
+                    1
+                  ],
+                  "Justification": 1
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "UTextBlock",
+        "Properties": {
+          "WidgetName": "DialogueText",
+          "Anchors": [
+            0.5,
+            1,
+            0.5,
+            1
+          ],
+          "Offsets": [
+            -760,
+            -150,
+            1520,
+            80
+          ],
+          "AlignmentX": 0.0,
+          "AlignmentY": 0.0,
+          "Visibility": 0,
+          "RenderOpacity": 1.0,
+          "ZOrder": 0,
+          "bAutoSize": false,
+          "Text": "",
+          "FontPath": "Assets/Fonts/Pretendard.json",
+          "FontSize": 52,
+          "ColorAndOpacity": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "Justification": 1
+        }
+      },
+      {
+        "Class": "UTextBlock",
+        "Properties": {
+          "WidgetName": "SkipHint",
+          "Anchors": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "Offsets": [
+            -600,
+            -76,
+            520,
+            42
+          ],
+          "AlignmentX": 0.0,
+          "AlignmentY": 0.0,
+          "Visibility": 0,
+          "RenderOpacity": 1.0,
+          "ZOrder": 0,
+          "bAutoSize": false,
+          "Text": "Space / Enter  건너뛰기",
+          "FontPath": "Assets/Fonts/Pretendard.json",
+          "FontSize": 26,
+          "ColorAndOpacity": [
+            0.88,
+            0.91,
+            0.95,
+            1
+          ],
+          "Justification": 2
+        }
+      }
+    ]
+  }
+}

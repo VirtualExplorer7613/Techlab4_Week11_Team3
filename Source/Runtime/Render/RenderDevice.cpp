@@ -1,0 +1,508 @@
+#include "EnginePCH.h"
+#include "RenderDevice.h"
+
+#include "Buffer.h"
+#include "Texture2D.h"
+#include "TextureCube.h"
+#include "PipelineState.h"
+#include "DDSTextureLoader11.h"
+
+FRenderDevice::FRenderDevice()
+{
+	Instance = this;
+	uint32 CreationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+
+#if defined(_DEBUG)
+	// If the project is in a debug build, enable debugging via SDK Layers.
+	CreationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
+	D3D_FEATURE_LEVEL FeatureLevels[] =
+	{
+		D3D_FEATURE_LEVEL_11_1,
+		D3D_FEATURE_LEVEL_11_0,
+	};
+
+	D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_HARDWARE;
+	HRESULT hr = D3D11CreateDevice(
+		nullptr,
+		driverType,
+		nullptr,
+		CreationFlags,
+		FeatureLevels,
+		ARRAYSIZE(FeatureLevels),
+		D3D11_SDK_VERSION,
+		Device.GetAddressOf(),
+		&FeatureLevel,
+		DeviceContext.GetAddressOf());
+
+	if (FAILED(hr))
+	{
+		HTR_LOG(Error, "Failed to Create D3D11Device & DeviceContext!");
+	}
+
+	// 오브젝트별 상수를 한 버퍼에 모아 두고 오프셋으로 바인딩하려면 D3D11.1 기능이 필요하다.
+	if (SUCCEEDED(DeviceContext.As(&DeviceContext1)))
+	{
+		D3D11_FEATURE_DATA_D3D11_OPTIONS Options{};
+		if (SUCCEEDED(Device->CheckFeatureSupport(D3D11_FEATURE_D3D11_OPTIONS, &Options, sizeof(Options))))
+			bConstantBufferOffsetting = Options.ConstantBufferOffsetting == TRUE;
+	}
+	HTR_LOG(Info, "Constant buffer offsetting: {}", bConstantBufferOffsetting ? "on" : "off");
+
+	ComPtr<IDXGIDevice1> DXGIDevice;
+	if (SUCCEEDED(Device->QueryInterface(IID_PPV_ARGS(DXGIDevice.GetAddressOf()))))
+	{
+		DXGIDevice->SetMaximumFrameLatency(1);
+	}
+	ComPtr<IDXGIAdapter> DXGIAdapter;
+	DXGIDevice->GetParent(IID_PPV_ARGS(DXGIAdapter.GetAddressOf()));
+	DXGIAdapter->GetParent(IID_PPV_ARGS(DXGIFactory.GetAddressOf()));
+
+	CreateStates();
+}
+
+FRenderDevice::~FRenderDevice()
+{
+	if (Instance == this) Instance = nullptr;
+}
+
+
+TUniquePtr<FVertexBuffer> FRenderDevice::CreateStaticVertexBuffer(const void* InVertices, uint32 InSize, uint32 Stride)
+{
+	D3D11_BUFFER_DESC Desc = {};
+	Desc.Usage = D3D11_USAGE_IMMUTABLE;          // 나중에 규모 커지면 immutable
+	Desc.ByteWidth = InSize;
+	Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+	TUniquePtr<FVertexBuffer> Buffer = MakeUnique<FVertexBuffer>(Device.Get(), Desc, Stride, InVertices);
+
+	return Buffer;
+}
+
+TUniquePtr<FIndexBuffer> FRenderDevice::CreateStaticIndexBuffer(const uint32* InIndices, uint32 IndexCount)
+{
+	D3D11_BUFFER_DESC Desc = {};
+	Desc.Usage = D3D11_USAGE_IMMUTABLE;
+	Desc.ByteWidth = sizeof(uint32) * IndexCount;
+	Desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+	uint32 MaxIndex = 0;
+	for (uint32 I = 0; I < IndexCount; ++I)
+		MaxIndex = std::max(MaxIndex, InIndices[I]);
+	if (MaxIndex <= 65535)
+	{
+		TArray<uint16> CompactIndices;
+		CompactIndices.SetNum(IndexCount);
+		for (uint32 I = 0; I < IndexCount; ++I)
+			CompactIndices[I] = static_cast<uint16>(InIndices[I]);
+		Desc.ByteWidth = sizeof(uint16) * IndexCount;
+		return MakeUnique<FIndexBuffer>(Device.Get(), Desc, IndexCount, CompactIndices.GetData(), DXGI_FORMAT_R16_UINT);
+	}
+	return MakeUnique<FIndexBuffer>(Device.Get(), Desc, IndexCount, InIndices, DXGI_FORMAT_R32_UINT);
+}
+
+TUniquePtr<FVertexBuffer> FRenderDevice::CreateDynamicVertexBuffer(uint32 MaxSize, uint32 Stride)
+{
+	D3D11_BUFFER_DESC Desc = {};
+	Desc.Usage = D3D11_USAGE_DYNAMIC;
+	Desc.ByteWidth = MaxSize;
+	Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	Desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+	TUniquePtr<FVertexBuffer> Buffer = MakeUnique<FVertexBuffer>(Device.Get(), Desc, Stride);
+
+	return Buffer;
+}
+
+TUniquePtr<FIndexBuffer> FRenderDevice::CreateDynamicIndexBuffer(uint32 MaxIndexCount)
+{
+	D3D11_BUFFER_DESC Desc = {};
+	Desc.Usage = D3D11_USAGE_DYNAMIC;
+	Desc.ByteWidth = sizeof(uint32) * MaxIndexCount;
+	Desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	Desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+	TUniquePtr<FIndexBuffer> Buffer = MakeUnique<FIndexBuffer>(Device.Get(), Desc, MaxIndexCount);
+
+	return Buffer;
+}
+
+TUniquePtr<FConstantBuffer> FRenderDevice::CreateConstantBuffer(uint32 BufferSize)
+{
+	D3D11_BUFFER_DESC Desc = {};
+	Desc.Usage = D3D11_USAGE_DYNAMIC;
+	Desc.ByteWidth = BufferSize;
+	Desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	Desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+	TUniquePtr<FConstantBuffer> Buffer = MakeUnique<FConstantBuffer>(Device.Get(), Desc);
+
+	return Buffer;
+}
+
+TUniquePtr<FStructuredBuffer> FRenderDevice::CreateDynamicStructuredBuffer(uint32 Stride, uint32 Count)
+{
+	D3D11_BUFFER_DESC Desc = {};
+	Desc.Usage = D3D11_USAGE_DYNAMIC;
+	Desc.ByteWidth = Stride*Count;
+	Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	Desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	Desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	Desc.StructureByteStride = Stride;
+
+	return MakeUnique<FStructuredBuffer>(Device.Get(), Desc, Count);
+}
+
+TUniquePtr<FStructuredBuffer> FRenderDevice::CreateRWStructuredBuffer(uint32 Stride, uint32 Count)
+{
+	D3D11_BUFFER_DESC Desc = {};
+	Desc.ByteWidth = Stride * Count;
+	Desc.Usage = D3D11_USAGE_DEFAULT;
+	Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+	Desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	Desc.StructureByteStride = Stride;
+
+	return MakeUnique<FStructuredBuffer>(Device.Get(), Desc, Count);
+}
+
+TUniquePtr<FTexture2D> FRenderDevice::CreateTexture2D(const D3D11_TEXTURE2D_DESC& Desc, const FImageData& Image)
+{
+	return MakeUnique<FTexture2D>(Device.Get(), Desc, Image);
+}
+
+TUniquePtr<FTexture2DArray> FRenderDevice::CreateTexture2DArray(const D3D11_TEXTURE2D_DESC& Desc, const void* InitialData)
+{
+	return MakeUnique<FTexture2DArray>(Device.Get(), Desc, InitialData);
+}
+
+TUniquePtr<FTexture2D> FRenderDevice::CreateTexture2D(const D3D11_TEXTURE2D_DESC& Desc, const void* InitialData)
+{
+	TUniquePtr<FTexture2D> Texture = MakeUnique<FTexture2D>(Device.Get(), Desc, InitialData);
+
+	return Texture;
+}
+
+TUniquePtr<FTexture2D> FRenderDevice::LoadDDSTexture(const FString& Path) {
+	const std::u8string UTF8Path{ Path.begin(), Path.end() };
+	const std::wstring FilePath{ std::filesystem::path{ UTF8Path }.wstring() };
+	ComPtr<ID3D11Resource> Resource{};
+	// 메시·아이콘 텍스처는 모두 sRGB 인코딩 값 그대로(_UNORM) 올린다.
+	// 색으로 쓰는 곳(UberLit 디퓨즈, 파티클)이 셰이더에서 직접 선형으로 바꾸고,
+	// 노멀맵·톤 매핑 이후 오버레이(아이콘 등)는 인코딩 값 그대로 써야 하기 때문이다.
+	// _SRGB DDS를 그대로 올리면 하드웨어 디코딩 + 셰이더 디코딩이 겹쳐 두 번 어두워진다.
+	const HRESULT LoadResult{ DirectX::CreateDDSTextureFromFileEx(
+		Device.Get(),
+		FilePath.c_str(),
+		0,                              // maxsize: 제한 없음
+		D3D11_USAGE_DEFAULT,
+		D3D11_BIND_SHADER_RESOURCE,
+		0,                              // CPU 접근 없음
+		0,
+		DirectX::DDS_LOADER_IGNORE_SRGB,
+		Resource.GetAddressOf(),
+		nullptr) };
+	if (FAILED(LoadResult)) {
+		HTR_LOG(Error, "[Texture] DDS load failed: {} (hr=0x{:08X})", Path, static_cast<uint32>(LoadResult));
+		return nullptr;
+	}
+
+	ComPtr<ID3D11Texture2D> Texture{};
+	if (FAILED(Resource.As(&Texture))) 
+	{
+		HTR_LOG(Error, "[Texture] DDS is not a 2D texture: {}", Path);
+		return nullptr;
+	}
+
+	D3D11_TEXTURE2D_DESC Desc{};
+	Texture->GetDesc(&Desc);
+	if (Desc.ArraySize != 1 || (Desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE) != 0) 
+	{
+		HTR_LOG(Error, "[Texture] DDS arrays and cubemaps are not supported by UTexture2D: {}", Path);
+		return nullptr;
+	}
+
+	TUniquePtr<FTexture2D> LoadedTexture{ MakeUnique<FTexture2D>(Device.Get(), std::move(Resource), Desc) };
+	if (!LoadedTexture->GetSRV()) 
+	{
+		return nullptr;
+	}
+	return LoadedTexture;
+}
+
+TUniquePtr<FTextureCube> FRenderDevice::CreateTextureCube(const D3D11_TEXTURE2D_DESC& Desc, const TArray<const void*>& InitialDatas)
+{
+	TUniquePtr<FTextureCube> Texture = MakeUnique<FTextureCube>(Device.Get(), Desc, InitialDatas);
+
+	return Texture;
+}
+
+TUniquePtr<FVertexShader> FRenderDevice::CreateVertexShader(const FShaderByteCode& ByteCode)
+{
+	TUniquePtr<FVertexShader> VS = MakeUnique<FVertexShader>(Device.Get(), ByteCode);
+
+	return VS;
+}
+
+TUniquePtr<FPixelShader> FRenderDevice::CreatePixelShader(const FShaderByteCode& ByteCode)
+{
+	TUniquePtr<FPixelShader> PS = MakeUnique<FPixelShader>(Device.Get(), ByteCode);
+
+	return PS;
+}
+
+TUniquePtr<FComputeShader> FRenderDevice::CreateComputeShader(const FShaderByteCode& ByteCode)
+{
+	TUniquePtr<FComputeShader> CS = MakeUnique<FComputeShader>(Device.Get(), ByteCode);
+
+	return CS;
+}
+
+//TUniquePtr<FShaderProgram> FRenderDevice::CreateShader(const wchar_t* FileName, D3D11_INPUT_ELEMENT_DESC* InLayoutDesc, size_t InLayoutSize)
+//{
+	//TUniquePtr<FShaderProgram> Shader = MakeUnique<FShaderProgram>();
+
+	//ID3DBlob* VertexShaderCSO;
+	//ID3DBlob* ErrorBlob;
+	//HRESULT hr = D3DCompileFromFile(FileName, nullptr, nullptr, "mainVS", "vs_5_0", 0, 0, &VertexShaderCSO, &ErrorBlob);
+
+	//if (FAILED(hr))
+	//{
+	//	if (ErrorBlob)
+	//	{
+	//		OutputDebugStringA((char*)ErrorBlob->GetBufferPointer());
+	//		ErrorBlob->Release();
+	//	}
+	//	assert(false && "Vertex shader compile failed");
+	//	return nullptr; 
+	//}
+
+	//hr = Device->CreateVertexShader(VertexShaderCSO->GetBufferPointer(), VertexShaderCSO->GetBufferSize(), nullptr, Shader->VertexShader.GetAddressOf());
+
+	//ID3DBlob* PixelShaderCSO;
+	//D3DCompileFromFile(FileName, nullptr, nullptr, "mainPS", "ps_5_0", 0, 0, &PixelShaderCSO, nullptr);
+	//Device->CreatePixelShader(PixelShaderCSO->GetBufferPointer(), PixelShaderCSO->GetBufferSize(), nullptr, Shader->PixelShader.GetAddressOf());
+
+	//if (InLayoutSize > 0)
+	//{
+	//	hr = Device->CreateInputLayout(InLayoutDesc, InLayoutSize,
+	//		VertexShaderCSO->GetBufferPointer(), VertexShaderCSO->GetBufferSize(), &(Shader->InputLayout));
+	//}
+
+	//VertexShaderCSO->Release();
+	//PixelShaderCSO->Release();
+
+	//return Shader;
+//}
+
+void FRenderDevice::Shutdown()
+{
+	DeviceContext->ClearState();
+	DeviceContext->Flush();
+}
+
+// RenderDevice.cpp
+void FRenderDevice::CreateStates()
+{
+	// ---------- Rasterizer ----------
+	{
+		D3D11_RASTERIZER_DESC Desc = {};
+		Desc.FillMode = D3D11_FILL_SOLID;
+		Desc.CullMode = D3D11_CULL_BACK;
+		Desc.FrontCounterClockwise = FALSE;
+		Desc.DepthClipEnable = TRUE;
+
+		Device->CreateRasterizerState(&Desc, RasterizerStates[(uint8)ERasterizerState::SolidBack].GetAddressOf());
+
+		Desc.CullMode = D3D11_CULL_NONE;
+		Device->CreateRasterizerState(&Desc, RasterizerStates[(uint8)ERasterizerState::SolidNone].GetAddressOf());
+
+		Desc.CullMode = D3D11_CULL_FRONT;
+		Device->CreateRasterizerState(&Desc, RasterizerStates[(uint8)ERasterizerState::SolidFront].GetAddressOf());
+
+		Desc.FillMode = D3D11_FILL_WIREFRAME;
+		Desc.CullMode = D3D11_CULL_NONE;
+		Device->CreateRasterizerState(&Desc, RasterizerStates[(uint8)ERasterizerState::Wireframe].GetAddressOf());
+
+		D3D11_RASTERIZER_DESC LightShadowDesc = {};
+		LightShadowDesc.FillMode = D3D11_FILL_SOLID;
+		LightShadowDesc.CullMode = D3D11_CULL_BACK;
+		LightShadowDesc.FrontCounterClockwise = FALSE;
+		LightShadowDesc.DepthClipEnable = TRUE;
+		// 깊이 bias는 ShadowDepth.hlsl이 Caster 깊이에 더한다 (언리얼 UpdateShaderDepthBias). 하드웨어 bias는 쓰지 않는다.
+		LightShadowDesc.DepthBias = 0;
+		LightShadowDesc.SlopeScaledDepthBias = 0.0f;
+		LightShadowDesc.DepthBiasClamp = 0.0f;
+		Device->CreateRasterizerState(&LightShadowDesc, RasterizerStates[(uint8)(ERasterizerState::LightShadow)].GetAddressOf());
+
+		// 방향광 cascade용. 지금은 같은 설정이지만, 정사영(선형 깊이)과 원근(비선형 깊이)을 따로 조정할 수 있게 상태를 나눠 둔다.
+		D3D11_RASTERIZER_DESC DirectionalShadowDesc = LightShadowDesc;
+		Device->CreateRasterizerState(&DirectionalShadowDesc, RasterizerStates[(uint8)(ERasterizerState::DirectionalLightShadow)].GetAddressOf());
+
+		// 데칼은 같은 메시를 다시 그리므로 깊이를 카메라 쪽으로 당겨 Z-fighting을 막는다.
+		D3D11_RASTERIZER_DESC DecalDesc = {};
+		DecalDesc.FillMode = D3D11_FILL_SOLID;
+		DecalDesc.CullMode = D3D11_CULL_BACK;
+		DecalDesc.FrontCounterClockwise = FALSE;
+		DecalDesc.DepthClipEnable = TRUE;
+		DecalDesc.DepthBias = -2;
+		DecalDesc.SlopeScaledDepthBias = -0.5f;
+		DecalDesc.DepthBiasClamp = 0.0f;
+		Device->CreateRasterizerState(&DecalDesc, RasterizerStates[(uint8)ERasterizerState::Decal].GetAddressOf());
+	}
+
+	// ---------- DepthStencil ----------
+	{
+		D3D11_DEPTH_STENCIL_DESC Desc = {};
+		Desc.DepthEnable = TRUE;
+		Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		// Depth Prepass가 쓴 깊이와 같은 값을 본 패스가 다시 그려도 통과하도록 LESS_EQUAL
+		Desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+		Desc.StencilEnable = FALSE;
+
+		Device->CreateDepthStencilState(&Desc, DepthStencilStates[(uint8)EDepthStencilState::Default].GetAddressOf());
+
+		Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+		Device->CreateDepthStencilState(&Desc, DepthStencilStates[(uint8)EDepthStencilState::ReadOnly].GetAddressOf());
+
+		Desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+		Device->CreateDepthStencilState(&Desc, DepthStencilStates[(uint8)EDepthStencilState::PrepassReadOnly].GetAddressOf());
+		Desc.DepthFunc = D3D11_COMPARISON_LESS;
+
+		Desc.DepthEnable = FALSE;
+		Device->CreateDepthStencilState(&Desc, DepthStencilStates[(uint8)EDepthStencilState::Disabled].GetAddressOf());
+
+		// 깊이 없이 선택 메시 영역의 스텐실을 올린다 (참조값 0 기준).
+		Desc.StencilEnable = TRUE;
+		Desc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+		Desc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+		Desc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+		Desc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+		Desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;
+		Desc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		Desc.BackFace = Desc.FrontFace;
+		Device->CreateDepthStencilState(&Desc, DepthStencilStates[(uint8)EDepthStencilState::StencilMask].GetAddressOf());
+
+		// 스텐실이 0인 픽셀(선택 메시 바깥)에만 그린다.
+		Desc.StencilWriteMask = 0;
+		Desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+		Desc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+		Desc.BackFace = Desc.FrontFace;
+		Device->CreateDepthStencilState(&Desc, DepthStencilStates[(uint8)EDepthStencilState::StencilOutline].GetAddressOf());
+
+		// 기존 깊이와 상관없이 덮어쓴다. 그림자 아틀라스의 타일 하나만 지울 때 쓴다.
+		D3D11_DEPTH_STENCIL_DESC AlwaysDesc = {};
+		AlwaysDesc.DepthEnable = TRUE;
+		AlwaysDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		AlwaysDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+		AlwaysDesc.StencilEnable = FALSE;
+		Device->CreateDepthStencilState(&AlwaysDesc, DepthStencilStates[(uint8)EDepthStencilState::AlwaysWrite].GetAddressOf());
+	}
+
+	// ---------- Blend ----------
+	{
+		D3D11_BLEND_DESC Desc = {};
+		Desc.RenderTarget[0].BlendEnable = FALSE;
+		Desc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+		Desc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
+		Desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		Desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		Desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+		Desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		Desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+		Device->CreateBlendState(&Desc, BlendStates[(uint8)EBlendState::Opaque].GetAddressOf());
+
+		Desc.RenderTarget[0].BlendEnable = TRUE;
+		Desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		Desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		Desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		Desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+
+		Device->CreateBlendState(&Desc, BlendStates[(uint8)EBlendState::AlphaBlend].GetAddressOf());
+
+		// 라이트 기여분을 HDR 타깃에 더한다. 알파는 기존 값을 유지한다.
+		Desc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+		Desc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+		Desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+		Desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+		Device->CreateBlendState(&Desc, BlendStates[(uint8)EBlendState::Additive].GetAddressOf());
+
+		// 스텐실 마스크 패스처럼 색은 쓰지 않고 깊이·스텐실만 갱신할 때 쓴다.
+		Desc.RenderTarget[0].BlendEnable = FALSE;
+		Desc.RenderTarget[0].RenderTargetWriteMask = 0;
+		Device->CreateBlendState(&Desc, BlendStates[(uint8)EBlendState::NoColorWrite].GetAddressOf());
+
+		// 그림자 마스크: 채널 하나만 쓴다. 덮어쓰기(Spot, Point 면)와 알파 블렌드(CSM 캐스케이드 Fade) 두 종류.
+		const UINT8 ChannelMasks[4] = { D3D11_COLOR_WRITE_ENABLE_RED, D3D11_COLOR_WRITE_ENABLE_GREEN, D3D11_COLOR_WRITE_ENABLE_BLUE, D3D11_COLOR_WRITE_ENABLE_ALPHA };
+		for (uint8 Channel = 0; Channel < 4; ++Channel)
+		{
+			Desc.RenderTarget[0].RenderTargetWriteMask = ChannelMasks[Channel];
+			Desc.RenderTarget[0].BlendEnable = FALSE;
+			Desc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+			Desc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
+			Desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+			Desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+			Device->CreateBlendState(&Desc, BlendStates[(uint8)EBlendState::ShadowMaskR + Channel].GetAddressOf());
+
+			Desc.RenderTarget[0].BlendEnable = TRUE;
+			Desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+			Desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+			Desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_SRC_ALPHA;
+			Desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+			Device->CreateBlendState(&Desc, BlendStates[(uint8)EBlendState::ShadowMaskFadeR + Channel].GetAddressOf());
+		}
+	}
+
+	// ---------- Sampler ----------
+	{
+		D3D11_SAMPLER_DESC LinearDesc = {};
+		LinearDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		LinearDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+		LinearDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+		LinearDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		LinearDesc.MaxAnisotropy = 1;
+		LinearDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		LinearDesc.MinLOD = 0.0f;
+		LinearDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+		Device->CreateSamplerState(&LinearDesc, SamplerStates[(uint8)ESamplerState::LinearClamp].GetAddressOf());
+
+		LinearDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		LinearDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		LinearDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+
+		Device->CreateSamplerState(&LinearDesc, SamplerStates[(uint8)ESamplerState::LinearWrap].GetAddressOf());
+
+		// 등장방형 파노라마용: 경도(U)는 이어지고 위도(V)는 극에서 멈춘다.
+		LinearDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+		LinearDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+
+		Device->CreateSamplerState(&LinearDesc, SamplerStates[(uint8)ESamplerState::LinearWrapUClampV].GetAddressOf());
+
+		D3D11_SAMPLER_DESC PointDesc = {};
+		PointDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+		PointDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+		PointDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP; 
+		PointDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		PointDesc.MaxAnisotropy = 1;
+		PointDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		PointDesc.MinLOD = 0.0f;
+		PointDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+		Device->CreateSamplerState(&PointDesc, SamplerStates[(uint8)ESamplerState::PointClamp].GetAddressOf());
+
+		D3D11_SAMPLER_DESC ShadowComparisionDesc = {};
+		PointDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+		PointDesc.AddressU = D3D11_TEXTURE_ADDRESS_MIRROR;
+		PointDesc.AddressV = D3D11_TEXTURE_ADDRESS_MIRROR;
+		PointDesc.AddressW = D3D11_TEXTURE_ADDRESS_MIRROR;
+		PointDesc.MaxAnisotropy = 1;
+		PointDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+		PointDesc.MinLOD = 0.0f;
+		PointDesc.MaxLOD = D3D11_FLOAT32_MAX;
+		PointDesc.BorderColor[0] = PointDesc.BorderColor[1] = PointDesc.BorderColor[2] = PointDesc.BorderColor[3] = 0.0f;
+
+		Device->CreateSamplerState(&PointDesc, SamplerStates[(uint8)ESamplerState::ShadowComparison].GetAddressOf());
+	}
+}

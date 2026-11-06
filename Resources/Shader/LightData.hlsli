@@ -1,0 +1,50 @@
+#ifndef LIGHT_DATA_INCLUDED
+#define LIGHT_DATA_INCLUDED
+
+// 모든 광원이 공유하는 GPU 원소. C++ SceneManagement.h의 FLightRenderParameters와 바이트 단위로 같다.
+#pragma pack_matrix(row_major)
+
+// ELightType과 같은 값이다.
+#define LIGHT_TYPE_DIRECTIONAL 0
+#define LIGHT_TYPE_POINT 1
+#define LIGHT_TYPE_SPOT  2
+#define LIGHT_TYPE_RECT  3
+
+// FLightRenderParameters::InvalidShadowMapChannel과 같은 값이다.
+#define INVALID_SHADOW_CHANNEL 0xFFFFFFFF
+
+struct FLightRenderParameters
+{
+    float3 Position;
+    float Radius;
+    float3 Color;
+    float Intensity;
+    float3 Direction;       // 방향광: 빛의 진행 방향, Spot·Rect: 빛을 내는 방향
+    float InnerConeCos;
+    float3 Right;           // Rect 전용
+    float FalloffExponent;
+    float OuterConeCos;
+    float HalfWidth;
+    float HalfHeight;
+    uint Type;
+    float BarnDoorCos;      // Rect 전용: 발광면 가장자리의 문(Barn Door)
+    float BarnDoorSin;
+    float BarnDoorLength;
+    uint ShadowMapChannel;  // ScreenShadowMask 채널 (Deferred 0, Forward 0~3), 없으면 INVALID_SHADOW_CHANNEL
+    float SourceSize;       // Directional: tan(angular radius), Point/Spot: world radius
+};
+
+struct FLightShadowRenderData
+{
+    row_major float4x4 ViewProjection;
+    float4 AtlasRect;
+    uint AtlasIndex;
+    float Near;
+    float Far;
+    float WorldUnitsPerTexel;
+    float Bias;      // 빛 방향 오프셋(월드)
+    float SlopeBias; // 법선 방향 오프셋(월드), 빛과의 각도에 비례
+    float Sharpen;   // 0~1, PCF 결과의 반그림자 폭을 좁힌다
+};
+
+#endif

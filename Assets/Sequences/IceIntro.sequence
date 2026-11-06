@@ -1,0 +1,907 @@
+{
+  "BindingReferences": [
+    {
+      "Actor": "Intro_Camera",
+      "Guid": "EDC653E08E4F49B49AD7E8915A8B8F7D"
+    },
+    {
+      "Actor": "Intro_Ultralisk",
+      "Guid": "0280ADC360BF487797C8F11833C82070"
+    },
+    {
+      "Actor": "Intro_Shiba",
+      "Guid": "FE64B575027F4243997589BF2E272AD4"
+    },
+    {
+      "Actor": "IcePlayer",
+      "Guid": "0FF22E6460591FD1EB9B23E2B75DCA78"
+    },
+    {
+      "Actor": "PlayerCamera",
+      "Guid": "F48E0C19E54D4A236240F2D5027250D2"
+    },
+    {
+      "Actor": "Stage1_StartBillboard",
+      "Guid": "C4C8C0341535F21E69B4CDE812BD3CCA"
+    }
+  ],
+  "MovieScene": {
+    "Bindings": [
+      {
+        "Class": "ACameraActor",
+        "Guid": "EDC653E08E4F49B49AD7E8915A8B8F7D",
+        "Name": "Intro_Camera",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 2.200000047683716
+                      },
+                      {
+                        "Arrive": -9.6153844424407e-06,
+                        "Interp": 2,
+                        "Leave": -9.6153844424407e-06,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": 2.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 156000,
+                        "Value": 0.699999988079071
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 3.5999999046325684
+                      },
+                      {
+                        "Arrive": -1.0256409950670786e-05,
+                        "Interp": 2,
+                        "Leave": -1.0256409950670786e-05,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": 3.200000047683716
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 156000,
+                        "Value": 2.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.550000011920929
+                      },
+                      {
+                        "Arrive": -1.92307697943761e-06,
+                        "Interp": 2,
+                        "Leave": -1.92307697943761e-06,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": 0.5
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 156000,
+                        "Value": 0.25
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -6.0
+                      },
+                      {
+                        "Arrive": -0.00012820512347389013,
+                        "Interp": 2,
+                        "Leave": -0.00012820512347389013,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": -9.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 156000,
+                        "Value": -26.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -102.0
+                      },
+                      {
+                        "Arrive": 3.84615377697628e-05,
+                        "Interp": 2,
+                        "Leave": 3.84615377697628e-05,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": -101.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 156000,
+                        "Value": -96.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 72000,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 156000,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "AStaticMeshActor",
+        "Guid": "0280ADC360BF487797C8F11833C82070",
+        "Name": "Intro_Ultralisk",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -1.7999999523162842
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 142400,
+                        "Value": -1.7999999523162842
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 192000,
+                        "Value": -1.7999999523162842
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -36.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 143200,
+                        "Value": -8.25
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 192000,
+                        "Value": -1.25
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 143200,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 191040,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 191832,
+                        "Value": -1000.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 90.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "AStaticMeshActor",
+        "Guid": "FE64B575027F4243997589BF2E272AD4",
+        "Name": "Intro_Shiba",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 1.399999976158142
+                      },
+                      {
+                        "Arrive": -1.0416663371870527e-06,
+                        "Interp": 2,
+                        "Leave": -1.0416663371870527e-06,
+                        "TangentMode": 0,
+                        "Time": 14400,
+                        "Value": 1.399999976158142
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 192000,
+                        "Value": 1.2000000476837158
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -12.0
+                      },
+                      {
+                        "Arrive": 8.333333244081587e-05,
+                        "Interp": 2,
+                        "Leave": 8.333333244081587e-05,
+                        "TangentMode": 0,
+                        "Time": 14400,
+                        "Value": -12.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 192000,
+                        "Value": 4.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 14400,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 191040,
+                        "Value": 0.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 2,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 191520,
+                        "Value": -1000.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 90.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 1,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "AActor",
+        "Guid": "0FF22E6460591FD1EB9B23E2B75DCA78",
+        "Name": "IcePlayer",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -3.549999952316284
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 198400,
+                        "Value": 7.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "APawn",
+        "Guid": "F48E0C19E54D4A236240F2D5027250D2",
+        "Name": "PlayerCamera",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "AActor",
+        "Guid": "C4C8C0341535F21E69B4CDE812BD3CCA",
+        "Name": "Stage1_StartBillboard",
+        "Tracks": [
+          {
+            "Class": "UMovieScene3DTransformTrack",
+            "EvalDisabled": false,
+            "Sections": [
+              {
+                "Active": true,
+                "Channels": [
+                  {
+                    "Keys": [
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 0,
+                        "Value": -1000.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 190400,
+                        "Value": -1000.0
+                      },
+                      {
+                        "Arrive": 0.0,
+                        "Interp": 0,
+                        "Leave": 0.0,
+                        "TangentMode": 0,
+                        "Time": 192000,
+                        "Value": 0.0
+                      }
+                    ]
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  },
+                  {
+                    "Keys": []
+                  }
+                ],
+                "Class": "UMovieScene3DTransformSection",
+                "Completion": 2
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "CameraCutTrack": {
+      "BlendTime": 0.5,
+      "CanBlend": true,
+      "Class": "UMovieSceneCameraCutTrack",
+      "EvalDisabled": false,
+      "Sections": [
+        {
+          "Active": true,
+          "Camera": "EDC653E08E4F49B49AD7E8915A8B8F7D",
+          "Channels": [],
+          "Class": "UMovieSceneCameraCutSection",
+          "Completion": 2,
+          "End": 144000,
+          "Start": 0
+        },
+        {
+          "Active": true,
+          "Camera": "0FF22E6460591FD1EB9B23E2B75DCA78",
+          "Channels": [],
+          "Class": "UMovieSceneCameraCutSection",
+          "Completion": 2,
+          "End": 192000,
+          "Start": 144000
+        },
+        {
+          "Active": true,
+          "Camera": "F48E0C19E54D4A236240F2D5027250D2",
+          "Channels": [],
+          "Class": "UMovieSceneCameraCutSection",
+          "Completion": 2,
+          "Start": 192000
+        }
+      ]
+    },
+    "DisplayRate": [
+      30,
+      1
+    ],
+    "PlaybackEnd": 206400,
+    "PlaybackStart": 0,
+    "TickResolution": [
+      24000,
+      1
+    ],
+    "Tracks": [
+      {
+        "Class": "UMovieSceneFadeTrack",
+        "EvalDisabled": false,
+        "Sections": [
+          {
+            "Active": true,
+            "Channels": [
+              {
+                "Keys": [
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 0,
+                    "Value": 1.0
+                  },
+                  {
+                    "Arrive": -3.787878813454881e-05,
+                    "Interp": 2,
+                    "Leave": -3.787878813454881e-05,
+                    "TangentMode": 0,
+                    "Time": 6000,
+                    "Value": 1.0
+                  },
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 26400,
+                    "Value": 0.0
+                  }
+                ]
+              }
+            ],
+            "Class": "UMovieSceneFadeSection",
+            "Completion": 2,
+            "FadeAudio": false,
+            "FadeColor": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          }
+        ]
+      },
+      {
+        "Class": "UMovieSceneCameraOverlayTrack",
+        "EvalDisabled": false,
+        "Sections": [
+          {
+            "Active": true,
+            "Channels": [
+              {
+                "Keys": [
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 0,
+                    "Value": 0.0
+                  },
+                  {
+                    "Arrive": 7.062146778480383e-06,
+                    "Interp": 2,
+                    "Leave": 7.062146778480383e-06,
+                    "TangentMode": 0,
+                    "Time": 14400,
+                    "Value": 1.0
+                  },
+                  {
+                    "Arrive": -7.062146778480383e-06,
+                    "Interp": 2,
+                    "Leave": -7.062146778480383e-06,
+                    "TangentMode": 0,
+                    "Time": 141600,
+                    "Value": 1.0
+                  },
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 156000,
+                    "Value": 0.0
+                  }
+                ]
+              },
+              {
+                "Keys": [
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 0,
+                    "Value": 0.0
+                  },
+                  {
+                    "Arrive": 4.687499767896952e-06,
+                    "Interp": 2,
+                    "Leave": 4.687499767896952e-06,
+                    "TangentMode": 0,
+                    "Time": 72000,
+                    "Value": 0.4000000059604645
+                  },
+                  {
+                    "Arrive": -3.012048182426952e-06,
+                    "Interp": 2,
+                    "Leave": -3.012048182426952e-06,
+                    "TangentMode": 0,
+                    "Time": 192000,
+                    "Value": 0.8999999761581421
+                  },
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 204800,
+                    "Value": 0.0
+                  }
+                ]
+              }
+            ],
+            "Class": "UMovieSceneCameraOverlaySection",
+            "Completion": 2,
+            "LetterboxAspect": 2.390000104904175
+          }
+        ]
+      }
+    ]
+  },
+  "Type": "LevelSequence"
+}

@@ -1,0 +1,59 @@
+{
+  "BindingReferences": [],
+  "MovieScene": {
+    "Bindings": [],
+    "DisplayRate": [
+      30,
+      1
+    ],
+    "PlaybackEnd": 120000,
+    "PlaybackStart": 0,
+    "TickResolution": [
+      24000,
+      1
+    ],
+    "Tracks": [
+      {
+        "Class": "UMovieSceneFadeTrack",
+        "EvalDisabled": false,
+        "Sections": [
+          {
+            "Active": true,
+            "Channels": [
+              {
+                "Keys": [
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 4800,
+                    "Value": 0.0
+                  },
+                  {
+                    "Arrive": 0.0,
+                    "Interp": 2,
+                    "Leave": 0.0,
+                    "TangentMode": 0,
+                    "Time": 112800,
+                    "Value": 1.0
+                  }
+                ]
+              }
+            ],
+            "Class": "UMovieSceneFadeSection",
+            "Completion": 2,
+            "FadeAudio": false,
+            "FadeColor": [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Type": "LevelSequence"
+}
