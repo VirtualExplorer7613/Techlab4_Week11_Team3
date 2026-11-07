@@ -6,6 +6,9 @@
 #include "Components/PrimitiveComponent.h"
 #include "Render/SkeletalMesh.h"
 #include "Render/LineBatcher.h"
+#include "Asset/AssetManager.h"
+#include "Animation/AnimSequence.h"
+#include "Animation/AnimData/AnimDataModel.h"
 
 #include <algorithm>
 #include <cmath>
@@ -439,6 +442,29 @@ void FSkeletalMeshViewerPanel::DrawGizmoToolbar()
 	{
 		Mode = (Mode + 1) % 3;
 		BoneGizmo.SetMode(static_cast<EGizmoMode>(Mode));
+	}
+
+	if (ImGui::Button("Load First Clip"))
+	{
+		USkeletalMeshComponent* Component = PreviewActor ? PreviewActor->GetSkeletalMeshComponent() : nullptr;
+		const USkeletalMesh* Mesh = Component ? Component->GetSkeletalMesh() : nullptr;
+		if (!Mesh)
+		{
+			return;
+		}
+
+		const FString& MeshKey = Mesh->GetPath();
+		const FString Path = "Assets/" + MeshKey;
+		UAnimSequence* Sequence = UAssetManager::Get().LoadAnimationSequence(MeshKey, Path);
+
+		const UAnimDataModel* Model = Sequence ? Sequence->GetDataModel() : nullptr;
+		if (!Model)
+		{
+			HTR_LOG(Error, "Failed to load animation from '{}'", Path);
+			return;
+		}
+
+		HTR_LOG(Info, "Animation loaded: {} tracks, {} keys per track, {:.3f} seconds", Model->GetBoneAnimationTracks().Num(), Model->GetNumberOfKeys(), Model->GetPlayLength());
 	}
 }
 
