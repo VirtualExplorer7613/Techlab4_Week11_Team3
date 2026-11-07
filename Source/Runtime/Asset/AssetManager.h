@@ -17,6 +17,7 @@ enum class EAssetType
 
 class UStaticMesh;
 class USoundWave;
+class UAnimSequence;
 
 namespace fs = std::filesystem;
 
@@ -38,6 +39,7 @@ public:
 
 	void ScanAssets(const fs::path& AssetRoot, const FAssetLoadProgress& OnProgress);
 	void LoadAsset(const FString& Key, const FString& Path);
+	UAnimSequence* LoadAnimationSequence(const FString& MeshKey, const FString& Path);
 
 	void CreateDefaultTextures();
 	void CreateDefaultMeshes();

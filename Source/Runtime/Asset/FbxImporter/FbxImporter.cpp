@@ -11,6 +11,13 @@
 #include "Core/EngineLog.h"
 #include "FbxBake.h"
 #include "Render/SkeletalMeshData.h"
+#include "Animation/AnimTypes.h"
+#include "Math/EngineMath.h"
+
+#include "Animation/AnimSequence.h"
+#include "Animation/AnimData/AnimDataController.h"
+#include "Animation/AnimData/AnimDataModel.h"
+#include "UObject/UObjectGlobals.h"
 
 namespace
 {
@@ -725,6 +732,77 @@ namespace
 		// 6. 결과 로그
 		HTR_LOG(Info, "FBX skin: clusters {}, unweighted CPs {}, bind-vs-ref max diff {}", ClusterCount, Unweighted, MaxBindDiff);
 	}
+
+	FQuat QuatFromRotationRows(const FVector& X, const FVector& Y, const FVector& Z)
+	{
+		const float Trace = X.X + Y.Y + Z.Z;
+
+		if (Trace > 0.0f)
+		{
+			const float FourW = 2.0f * std::sqrt(1.0f + Trace);
+			return FQuat((Y.Z - Z.Y) / FourW, (Z.X - X.Z) / FourW, (X.Y - Y.X) / FourW, 0.25f * FourW);
+		}
+
+		if (X.X >= Y.Y && X.X >= Z.Z)
+		{
+			const float FourX = 2.0f * std::sqrt(1.0f + X.X - Y.Y - Z.Z);
+			return FQuat(0.25f * FourX, (X.Y + Y.X) / FourX, (X.Z + Z.X) / FourX, (Y.Z - Z.Y) / FourX);
+		}
+
+		if (Y.Y >= Z.Z)
+		{
+			const float FourY = 2.0f * std::sqrt(1.0f + Y.Y - X.X - Z.Z);
+			return FQuat((X.Y + Y.X) / FourY, 0.25f * FourY, (Y.Z + Z.Y) / FourY, (Z.X - X.Z) / FourY);
+		}
+
+		const float FourZ = 2.0f * std::sqrt(1.0f + Z.Z - X.X - Y.Y);
+		return FQuat((X.Z + Z.X) / FourZ, (Y.Z + Z.Y) / FourZ, 0.25f * FourZ, (X.Y - Y.X) / FourZ);
+	}
+
+	bool TryDecomposeBoneLocal(const FMatrix& Local, FVector& OutPosition, FQuat& OutRotation, FVector& OutScale)
+	{
+		const FVector Position(Local.M[3][0], Local.M[3][1], Local.M[3][2]);
+
+		FVector X(Local.M[0][0], Local.M[0][1], Local.M[0][2]);
+		FVector Y(Local.M[1][0], Local.M[1][1], Local.M[1][2]);
+		FVector Z(Local.M[2][0], Local.M[2][1], Local.M[2][2]);
+
+		FVector Scale(X.Size(), Y.Size(), Z.Size());
+
+		const auto IsFinite = [](const FVector& V)
+		{
+			return std::isfinite(V.X) && std::isfinite(V.Y)	&& std::isfinite(V.Z);
+		};
+
+		constexpr float MinScale = 1e-6f;
+		if (!IsFinite(Position) || !IsFinite(Scale)	|| Scale.X <= MinScale || Scale.Y <= MinScale || Scale.Z <= MinScale)
+		{
+			return false;
+		}
+
+		X = X / Scale.X;
+		Y = Y / Scale.Y;
+		Z = Z / Scale.Z;
+
+		// 세 축이 서로 직교해야 위치·회전·크기로 표현할 수 있다.
+		constexpr float OrthoTolerance = 1e-3f;	if (std::abs(X.Dot(Y)) > OrthoTolerance	|| std::abs(X.Dot(Z)) > OrthoTolerance || std::abs(Y.Dot(Z)) > OrthoTolerance)
+		{
+			return false;
+		}
+
+		// 반사가 있는 경우 부호를 X 스케일에 저장합니다.
+		if (X.Cross(Y).Dot(Z) < 0.0f)
+		{
+			X = X * -1.0f;
+			Scale.X = -Scale.X;
+		}
+
+		OutPosition = Position;
+		OutRotation = QuatFromRotationRows(X, Y, Z).Normalized();
+		OutScale = Scale;
+		return true;
+	}
+
 }
 
 
@@ -831,4 +909,169 @@ void FFbxImporter::PrintSkeleton(const FSkeletalMeshData& Data)
 
 		HTR_LOG(Info, "{}[{}] {}", FString(static_cast<size_t>(Depth) * 2, ' '), i, Bone.Name);
 	}
+}
+
+UAnimSequence* FFbxImporter::LoadAnimSequence(const FString& Path, int32 StackIndex, int32 SampleRate)
+{
+	if (SampleRate <= 0)
+	{
+		HTR_LOG(Error, "Invalid SampleRate");
+		return nullptr;
+	}
+
+	FFbxContext Context;
+
+	// 파일열기
+	if (!LoadScene(Path, Context))
+	{
+		return nullptr;
+	}
+
+	FbxScene* Scene = Context.Scene;
+
+	const int32 StackCount = Scene->GetSrcObjectCount<FbxAnimStack>();
+
+	if (StackIndex < 0 || StackIndex >= StackCount)
+	{
+		HTR_LOG(Error, "Invalid animation stack index: {} (stack count: {})", StackIndex, StackCount);
+		return nullptr;
+	}
+
+	FbxAnimStack* AnimStack = Scene->GetSrcObject<FbxAnimStack>(StackIndex);
+	if (!AnimStack)
+	{
+		HTR_LOG(Error, "Failed to get animation stack: {}", StackIndex);
+		return nullptr;
+	}
+
+	Scene->SetCurrentAnimationStack(AnimStack);
+
+	const FbxTimeSpan TimeSpan = AnimStack->GetLocalTimeSpan();
+	const double StartSeconds = TimeSpan.GetStart().GetSecondDouble();
+	const double EndSeconds = TimeSpan.GetStop().GetSecondDouble();
+	const double DurationSeconds = EndSeconds - StartSeconds;
+
+	if (DurationSeconds <= 0.0)
+	{
+		HTR_LOG(Error, "Invalid animation duration: {} seconds", DurationSeconds);
+		return nullptr;
+	}
+
+	HTR_LOG(Info, "FBX animation '{}': {:.3f}s to {:.3f}s, duration {:.3f}s", AnimStack->GetName(), StartSeconds, EndSeconds, DurationSeconds);
+
+	const double FrameCount = std::floor(DurationSeconds * SampleRate);
+
+	if (!std::isfinite(FrameCount) || FrameCount < 1.0)
+	{
+		HTR_LOG(Error, "Unsupported animation frame count: {}", FrameCount);
+		return nullptr;
+	}
+
+	const int32 NumFrames = static_cast<int32>(FrameCount);
+	const int32 NumKeys = NumFrames + 1;
+	const double SampleInterval = 1.0 / SampleRate;
+
+	TArray<FBoneInfo> Bones;
+	TArray<FbxNode*> BoneNodes;
+
+	CollectBones(Scene->GetRootNode(), -1, Bones, BoneNodes);
+
+	if (Bones.IsEmpty())
+	{
+		HTR_LOG(Error, "No skeleton bones in FBX: {}", Path);
+		return nullptr;
+	}
+
+	TArray<FRawAnimSequenceTrack> RawTracks;
+	RawTracks.SetNum(Bones.Num());
+
+	TArray<FMatrix> Globals;
+	Globals.SetNum(Bones.Num());
+
+	for (int32 KeyIndex = 0; KeyIndex < NumKeys; ++KeyIndex)
+	{
+		FbxTime SampleTime;
+		SampleTime.SetSecondDouble(StartSeconds + KeyIndex * SampleInterval);
+
+		for (int32 BoneIndex = 0; BoneIndex < Bones.Num(); ++BoneIndex)
+		{
+			const FMatrix Global = ToEngineMatrix(BoneNodes[BoneIndex]->EvaluateGlobalTransform(SampleTime));
+			Globals[BoneIndex] = Global;
+
+			FMatrix Local = Global;
+			const int32 ParentIndex = Bones[BoneIndex].ParentIndex;
+
+			if (ParentIndex >= 0)
+			{
+				const FMatrix& ParentGlobal = Globals[ParentIndex];
+				const float Determinant = ParentGlobal.Determinant();
+
+				if (!std::isfinite(Determinant) || FMath::IsNearlyZero(Determinant))
+				{
+					HTR_LOG(Error, "Cannot invert parent of bone '{}' at key {}", Bones[BoneIndex].Name, KeyIndex);
+					return nullptr;
+				}
+
+				Local = Global * ParentGlobal.Inverse();
+			}
+
+			FVector Position;
+			FQuat Rotation;
+			FVector Scale;
+
+			if (!TryDecomposeBoneLocal(Local, Position, Rotation, Scale))
+			{
+				HTR_LOG(Error, "Cannot decompose bone '{}' at key {}",	Bones[BoneIndex].Name, KeyIndex);
+				return nullptr;
+			}
+
+			FRawAnimSequenceTrack& Track = RawTracks[BoneIndex];
+			Track.PosKeys.Add(Position);
+			Track.RotKeys.Add(Rotation);
+			Track.ScaleKeys.Add(Scale);
+		}
+	}
+
+	TUniquePtr<UAnimSequence> Sequence(NewObject<UAnimSequence>());
+
+	if (!Sequence || !Sequence->InitializeModel())
+	{
+		HTR_LOG(Error, "Failed to initialize animation sequence: {}", Path);
+		return nullptr;
+	}
+
+	TUniquePtr<UAnimDataModel> Model(Sequence->GetDataModel());
+	TUniquePtr<UAnimDataController> Controller(NewObject<UAnimDataController>());
+
+	if (!Controller)
+	{
+		HTR_LOG(Error, "Failed to create animation data controller: {}", Path);
+		return nullptr;
+	}
+
+	Controller->SetModel(Model.get());
+	Controller->SetFrameRate(FFrameRate(SampleRate, 1));
+
+	if (!Controller->SetNumberOfFrames(FFrameNumber(NumFrames)))
+	{
+		HTR_LOG(Error, "Failed to set animation frame count: {}", NumFrames);
+		return nullptr;
+	}
+
+	for (int32 BoneIndex = 0; BoneIndex < Bones.Num(); ++BoneIndex)
+	{
+		const FName BoneName(Bones[BoneIndex].Name);
+		const FRawAnimSequenceTrack& Keys = RawTracks[BoneIndex];
+
+		if (!Controller->AddBoneTrack(BoneName) || !Controller->SetBoneTrackKeys(BoneName, Keys.PosKeys, Keys.RotKeys, Keys.ScaleKeys))
+		{
+			HTR_LOG(Error, "Failed to store animation track '{}'", Bones[BoneIndex].Name);
+			return nullptr;
+		}
+	}
+
+	HTR_LOG(Info, "Imported animation '{}' with {} bone tracks and {} keys per track", AnimStack->GetName(), Bones.Num(), NumKeys);
+
+	(void)Model.release();
+	return Sequence.release();
 }

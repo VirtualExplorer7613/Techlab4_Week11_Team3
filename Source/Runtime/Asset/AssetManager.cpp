@@ -20,6 +20,7 @@
 #include <cctype>
 #include "FbxImporter/FbxImporter.h"
 #include "Render/SkeletalMesh.h"
+#include "Animation/AnimSequence.h"
 
 
 namespace
@@ -261,6 +262,25 @@ void UAssetManager::LoadAsset(const FString& Key, const FString& Path) {
 			}
 		}
 	}
+}
+
+UAnimSequence* UAssetManager::LoadAnimationSequence(const FString& MeshKey, const FString& Path)
+{
+	const FString AnimKey = MeshKey + "#Anim:0";
+
+	if (UAnimSequence* Existing = GetAssetByPath<UAnimSequence>(AnimKey))
+	{
+		return Existing;
+	}
+
+	UAnimSequence* Sequence = FFbxImporter::LoadAnimSequence(Path, 0, 30);
+	if (!Sequence)
+	{
+		return nullptr;
+	}
+
+	RegisterAsset(AnimKey, Sequence);
+	return Sequence;
 }
 
 void UAssetManager::CreateDefaultTextures() {
