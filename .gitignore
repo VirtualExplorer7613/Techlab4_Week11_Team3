@@ -449,6 +449,7 @@ editor.ini
 # FBX Bake. 원본 수정 시간을 저장해 FBX가 바뀌면 자동으로 다시 Import한다. PC마다 파일 시간이 달라 공유하지 않는다
 *.fbx.bin
 *.FBX.bin
+*.[fF][bB][xX].anim_*.bin
 
 # 셰이더 컴파일 캐시 (실행 시 자동 생성)
 /Intermediate/
