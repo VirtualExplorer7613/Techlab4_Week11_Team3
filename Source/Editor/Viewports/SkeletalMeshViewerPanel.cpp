@@ -12,6 +12,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <format>
 
 namespace
 {
@@ -54,7 +55,6 @@ bool FSkeletalMeshViewerPanel::Init()
 
 void FSkeletalMeshViewerPanel::Tick(float DeltaTime)
 {
-	(void)DeltaTime;
 	if (!ViewportClient)
 		return;
 	if (RequestedWidth != ViewportClient->GetWidth() || RequestedHeight != ViewportClient->GetHeight())
@@ -65,7 +65,38 @@ void FSkeletalMeshViewerPanel::Tick(float DeltaTime)
 	if (PreviewLight)
 		PreviewLight->GetLightComponent()->SetRelativeRotation(ViewportClient->GetViewRotation());
 
+	TickAnimationPreview(DeltaTime);
 	UpdateBoneGizmoAndPicking();
+}
+
+void FSkeletalMeshViewerPanel::TickAnimationPreview(float DeltaTime)
+{
+	if (!IsOpen() || !ViewportClient->IsActive() || !bPreviewPlaying || !std::isfinite(DeltaTime) || DeltaTime <= 0.0f)
+	{
+		return;
+	}
+
+	const UAnimSequence* Sequence = GetSelectedAnimationSequence();
+	const UAnimDataModel* Model = Sequence ? Sequence->GetDataModel() : nullptr;
+	const double FPS = Model ? Model->GetFrameRate().AsDecimal() : 0.0;
+	const int32 NumKeys = Model ? Model->GetNumberOfKeys() : 0;
+	if (NumKeys <= 1 || !std::isfinite(FPS) || FPS <= 0.0)
+	{
+		bPreviewPlaying = false;
+		return;
+	}
+
+	const int32 LastFrame = NumKeys - 1;
+	const double EndTime = LastFrame / FPS;
+	PreviewTime += DeltaTime;
+	if (PreviewTime >= EndTime)
+	{
+		PreviewTime = bPreviewLooping ? std::fmod(PreviewTime, EndTime) : EndTime;
+		bPreviewPlaying = bPreviewLooping;
+	}
+
+	PreviewFrame = PreviewTime >= EndTime ? LastFrame : static_cast<int32>(PreviewTime * FPS);
+	PreviewAnimationPose(*Sequence, PreviewTime);
 }
 
 void FSkeletalMeshViewerPanel::OnRender()
@@ -84,10 +115,10 @@ void FSkeletalMeshViewerPanel::OnRender()
 	if (ImGui::Begin(GetPanelName(), &bOpen))
 	{
 		DrawGizmoToolbar();
-		// 왼쪽은 뷰포트 이미지, 오른쪽은 본 트리
+		// 왼쪽은 뷰포트 이미지, 오른쪽은 본과 애니메이션 탭
 		const ImVec2 Avail = ImGui::GetContentRegionAvail();
 		// 트리는 가장 긴 이름에 맞추고, 창이 좁으면 절반까지만 쓰고 가로 스크롤로 본다
-		const float TreeWidth = std::min(CalcBoneTreeWidth(), Avail.x * 0.5f);
+		const float TreeWidth = std::min(std::max(CalcBoneTreeWidth(), 250.0f), Avail.x * 0.5f);
 		const ImVec2 Size(Avail.x - TreeWidth - ImGui::GetStyle().ItemSpacing.x, Avail.y);
 		const bool bVisible = Size.x >= 1.0f && Size.y >= 1.0f;
 		ViewportClient->SetActive(bVisible);
@@ -108,8 +139,22 @@ void FSkeletalMeshViewerPanel::OnRender()
 			ImGui::SameLine();
 		}
 		// 본 계층은 깊어서(Manny 손가락 끝은 15단계 안팎) 넘치는 이름은 가로 스크롤로 본다
-		if (ImGui::BeginChild("BoneTree", ImVec2(0.0f, Avail.y), ImGuiChildFlags_Borders, ImGuiWindowFlags_HorizontalScrollbar))
-			DrawBoneTree();
+		if (ImGui::BeginChild("ViewerDetails", ImVec2(0.0f, Avail.y), ImGuiChildFlags_Borders, ImGuiWindowFlags_HorizontalScrollbar)
+			&& ImGui::BeginTabBar("ViewerDetailsTabs"))
+		{
+			if (ImGui::BeginTabItem("Bones"))
+			{
+				DrawBoneTree();
+				ImGui::EndTabItem();
+			}
+			const FString AnimationTab = std::format("Animations ({})###Animations", AnimationClips.Num());
+			if (ImGui::BeginTabItem(AnimationTab.c_str()))
+			{
+				DrawAnimationClips();
+				ImGui::EndTabItem();
+			}
+			ImGui::EndTabBar();
+		}
 		ImGui::EndChild();
 	}
 	else
@@ -132,6 +177,12 @@ void FSkeletalMeshViewerPanel::OpenAsset(USkeletalMesh* Mesh)
 		return;
 	// 이전 메시의 본 인덱스가 새 메시에서 엉뚱한 본을 가리키지 않게 선택부터 비운다
 	SelectedBone = INDEX_NONE;
+	AnimationClips.Reset();
+	AnimationClipStatus.clear();
+	SelectedAnimationStack = INDEX_NONE;
+	PreviewFrame = 0;
+	PreviewTime = 0.0;
+	bPreviewPlaying = false;
 	BoneGizmo.SetTarget(nullptr);
 	PreviewActor->GetSkeletalMeshComponent()->SetSkeletalMesh(Mesh);
 	PreviewActor->GetSkeletalMeshComponent()->ApplyPose();
@@ -443,29 +494,123 @@ void FSkeletalMeshViewerPanel::DrawGizmoToolbar()
 		Mode = (Mode + 1) % 3;
 		BoneGizmo.SetMode(static_cast<EGizmoMode>(Mode));
 	}
+}
 
-	if (ImGui::Button("Load First Clip"))
+void FSkeletalMeshViewerPanel::LoadAnimationClips(const USkeletalMesh& Mesh)
+{
+	AnimationClips.Reset();
+	AnimationClipStatus.clear();
+	SelectedAnimationStack = INDEX_NONE;
+	PreviewFrame = 0;
+	PreviewTime = 0.0;
+	bPreviewPlaying = false;
+
+	const FString& MeshKey = Mesh.GetPath();
+	const FString Path = "Assets/" + MeshKey;
+	if (!UAssetManager::Get().LoadAnimationClips(MeshKey, Path, AnimationClips))
 	{
-		USkeletalMeshComponent* Component = PreviewActor ? PreviewActor->GetSkeletalMeshComponent() : nullptr;
-		const USkeletalMesh* Mesh = Component ? Component->GetSkeletalMesh() : nullptr;
-		if (!Mesh)
-		{
-			return;
-		}
-
-		const FString& MeshKey = Mesh->GetPath();
-		const FString Path = "Assets/" + MeshKey;
-		UAnimSequence* Sequence = UAssetManager::Get().LoadAnimationSequence(MeshKey, Path);
-
-		const UAnimDataModel* Model = Sequence ? Sequence->GetDataModel() : nullptr;
-		if (!Model)
-		{
-			HTR_LOG(Error, "Failed to load animation from '{}'", Path);
-			return;
-		}
-
-		HTR_LOG(Info, "Animation loaded: {} tracks, {} keys per track, {:.3f} seconds", Model->GetBoneAnimationTracks().Num(), Model->GetNumberOfKeys(), Model->GetPlayLength());
+		AnimationClipStatus = "Could not read animation clips from the FBX.";
+		return;
 	}
+	if (AnimationClips.IsEmpty())
+	{
+		AnimationClipStatus = "This FBX contains no animation clips.";
+	}
+}
+
+const UAnimSequence* FSkeletalMeshViewerPanel::GetSelectedAnimationSequence() const
+{
+	for (const FFbxAnimationClip& Clip : AnimationClips)
+	{
+		if (Clip.StackIndex == SelectedAnimationStack)
+		{
+			return Clip.Sequence;
+		}
+	}
+	return nullptr;
+}
+
+void FSkeletalMeshViewerPanel::PreviewAnimationPose(const UAnimSequence& Sequence, double TimeSeconds)
+{
+	USkeletalMeshComponent* Component = PreviewActor ? PreviewActor->GetSkeletalMeshComponent() : nullptr;
+	if (Component)
+	{
+		Component->ApplyAnimationPose(Sequence, TimeSeconds);
+	}
+}
+
+void FSkeletalMeshViewerPanel::DrawAnimationClips()
+{
+	const USkeletalMesh* Mesh = PreviewActor ? PreviewActor->GetSkeletalMeshComponent()->GetSkeletalMesh() : nullptr;
+	ImGui::BeginDisabled(!Mesh);
+	const bool bLoadClips = ImGui::Button("Load All Clips");
+	ImGui::EndDisabled();
+	if (bLoadClips && Mesh)
+	{
+		LoadAnimationClips(*Mesh);
+	}
+
+	if (!AnimationClipStatus.empty())
+	{
+		ImGui::TextWrapped("%s", AnimationClipStatus.c_str());
+	}
+
+	bool bSelectionChanged = false;
+	for (const FFbxAnimationClip& Clip : AnimationClips)
+	{
+		const size_t Separator = Clip.Name.find_last_of('|');
+		const FString DisplayName = Separator == FString::npos ? Clip.Name : Clip.Name.substr(Separator + 1);
+		const UAnimDataModel* Model = Clip.Sequence ? Clip.Sequence->GetDataModel() : nullptr;
+		const double Duration = Model ? Model->GetPlayLength() : Clip.DurationSeconds;
+		const FString Label = std::format("{}  {:.2f}s{}###Clip", DisplayName, Duration, Model ? "" : "  (Failed)");
+
+		ImGui::PushID(Clip.StackIndex);
+		if (ImGui::Selectable(Label.c_str(), SelectedAnimationStack == Clip.StackIndex))
+		{
+			const int32 NewSelection = Model ? Clip.StackIndex : INDEX_NONE;
+			if (NewSelection != SelectedAnimationStack)
+			{
+				SelectedAnimationStack = NewSelection;
+				PreviewFrame = 0;
+				PreviewTime = 0.0;
+				bPreviewPlaying = false;
+				bSelectionChanged = true;
+			}
+		}
+		if (ImGui::IsItemHovered())
+		{
+			ImGui::SetTooltip("[%d] %s", Clip.StackIndex, Clip.Name.c_str());
+		}
+		ImGui::PopID();
+	}
+
+	const UAnimSequence* Sequence = GetSelectedAnimationSequence();
+	const UAnimDataModel* Model = Sequence ? Sequence->GetDataModel() : nullptr;
+	const int32 NumKeys = Model ? Model->GetNumberOfKeys() : 0;
+	const int32 LastFrame = NumKeys > 0 ? NumKeys - 1 : 0;
+	const double FPS = Model ? Model->GetFrameRate().AsDecimal() : 0.0;
+	const bool bValidRate = std::isfinite(FPS) && FPS > 0.0;
+	ImGui::BeginDisabled(LastFrame == 0 || !bValidRate);
+	const bool bFrameChanged = ImGui::SliderInt("Frame", &PreviewFrame, 0, LastFrame, "%d", ImGuiSliderFlags_AlwaysClamp);
+
+	if (NumKeys > 0 && bValidRate && (bSelectionChanged || bFrameChanged))
+	{
+		PreviewTime = PreviewFrame / FPS;
+		PreviewAnimationPose(*Sequence, PreviewTime);
+	}
+	if (ImGui::Button(bPreviewPlaying ? "Pause###PreviewPlayback" : "Play###PreviewPlayback"))
+	{
+		bPreviewPlaying = !bPreviewPlaying;
+		if (bPreviewPlaying && PreviewTime >= LastFrame / FPS)
+		{
+			PreviewTime = 0.0;
+			PreviewFrame = 0;
+			PreviewAnimationPose(*Sequence, PreviewTime);
+		}
+	}
+	ImGui::SameLine();
+	ImGui::Checkbox("Loop", &bPreviewLooping);
+	ImGui::EndDisabled();
 }
 
 void FSkeletalMeshViewerPanel::DrawBoneTree()

@@ -4,10 +4,11 @@
 #include "UObject/Property.h"
 #include "Render/Renderer.h"
 #include "Asset/LOD/StaticMeshLODGenerator.h"
-
+#include "Containers/Set.h"
+#include "FbxImporter/FbxImporter.h"
 #include <filesystem>
 #include <functional>
-
+#include <optional>
 #include "AssetManager.generated.h"
 
 enum class EAssetType
@@ -39,7 +40,8 @@ public:
 
 	void ScanAssets(const fs::path& AssetRoot, const FAssetLoadProgress& OnProgress);
 	void LoadAsset(const FString& Key, const FString& Path);
-	UAnimSequence* LoadAnimationSequence(const FString& MeshKey, const FString& Path);
+	UAnimSequence* LoadAnimationSequence(const FString& MeshKey, const FString& Path, int32 StackIndex = 0);
+	bool LoadAnimationClips(const FString& MeshKey, const FString& Path, TArray<FFbxAnimationClip>& OutClips);
 
 	void CreateDefaultTextures();
 	void CreateDefaultMeshes();
@@ -88,4 +90,15 @@ private:
 	TMap<FString, TUniquePtr<FShader>> ShaderMap;	// KEY: FILE NAME
 
 	//TMap<FString, UTexture2D*> TextureMap;
+
+	struct FAnimationSourceCache
+	{
+		FString Path;
+		std::optional<int64> SourceTime;
+		std::optional<TArray<FFbxAnimationClip>> Clips;
+		TSet<int32> RegisteredStacks;
+	};
+
+	FAnimationSourceCache& GetAnimationSourceCache(const FString& MeshKey, const FString& Path);
+	TMap<FString, FAnimationSourceCache> AnimationSourceCache;
 };

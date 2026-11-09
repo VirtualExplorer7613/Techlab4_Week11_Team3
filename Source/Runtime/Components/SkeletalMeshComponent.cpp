@@ -1,11 +1,16 @@
 #include "EnginePCH.h"
 #include "SkeletalMeshComponent.h"
+#include "Animation/AnimData/AnimDataModel.h"
+#include "Animation/AnimSequence.h"
 #include "Asset/AssetManager.h"
 #include "Core/EngineLog.h"
 #include "Math/Quat.h"
 
+#include <cmath>
+
 USkeletalMeshComponent::USkeletalMeshComponent()
 {
+	PrimaryComponentTick.bCanEverTick = true;
 	// 배치 직후 보이도록 기본 에셋을 둔다 (StaticMeshComponent의 Cube와 같은 역할). Details에서 바꾼다
 	SkeletalMesh = UAssetManager::GetAssetByPath<USkeletalMesh>("Models/SKM_UnrealMan/SKM_Manny_Simple.FBX");
 	ResetToRefPose();
@@ -13,9 +18,68 @@ USkeletalMeshComponent::USkeletalMeshComponent()
 
 void USkeletalMeshComponent::OnSkeletalMeshChanged()
 {
+	PlayingSequence = nullptr;
+	PlaybackTime = 0.0;
 	// 뼈 수와 바인드 자세가 에셋마다 다르므로 이전 에셋의 자세는 버린다
 	ResetToRefPose();
 	Super::OnSkeletalMeshChanged();
+}
+
+bool USkeletalMeshComponent::ApplyAnimationPose(const UAnimSequence& Sequence, double TimeSeconds)
+{
+	TArray<FMatrix> EvaluatedPose;
+	if (!SkeletalMesh || !Sequence.EvaluatePoseAtTime(TimeSeconds, SkeletalMesh->Data.Bones, EvaluatedPose))
+	{
+		return false;
+	}
+
+	LocalPose = std::move(EvaluatedPose);
+	ApplyPose();
+	return true;
+}
+
+bool USkeletalMeshComponent::PlayAnimation(const UAnimSequence* Sequence, bool bLooping)
+{
+	PlayingSequence = nullptr;
+	PlaybackTime = 0.0;
+	if (!Sequence || !ApplyAnimationPose(*Sequence, PlaybackTime))
+	{
+		return false;
+	}
+
+	PlayingSequence = Sequence;
+	bLoopAnimation = bLooping;
+	return true;
+}
+
+void USkeletalMeshComponent::TickComponent(float DeltaTime)
+{
+	Super::TickComponent(DeltaTime);
+	if (!PlayingSequence || !std::isfinite(DeltaTime) || DeltaTime <= 0.0f)
+	{
+		return;
+	}
+
+	const UAnimDataModel* Model = PlayingSequence->GetDataModel();
+	const double FPS = Model ? Model->GetFrameRate().AsDecimal() : 0.0;
+	const int32 NumKeys = Model ? Model->GetNumberOfKeys() : 0;
+	if (NumKeys <= 1 || !std::isfinite(FPS) || FPS <= 0.0)
+	{
+		PlayingSequence = nullptr;
+		return;
+	}
+
+	const double EndTime = (NumKeys - 1) / FPS;
+	PlaybackTime += DeltaTime;
+	const bool bReachedEnd = !bLoopAnimation && PlaybackTime >= EndTime;
+	if (PlaybackTime >= EndTime)
+	{
+		PlaybackTime = bLoopAnimation ? std::fmod(PlaybackTime, EndTime) : EndTime;
+	}
+	if (!ApplyAnimationPose(*PlayingSequence, PlaybackTime) || bReachedEnd)
+	{
+		PlayingSequence = nullptr;
+	}
 }
 
 void USkeletalMeshComponent::ResetToRefPose()

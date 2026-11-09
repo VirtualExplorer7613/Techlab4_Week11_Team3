@@ -3,6 +3,7 @@
 #include "Editor/EditorUI/EditorPanel.h"
 #include "Editor/Viewports/EditorViewportClient.h"
 #include "Editor/Gizmo/Gizmo.h"
+#include "Asset/FbxImporter/FbxImporter.h"
 
 class UWorld;
 class USkeletalMesh;
@@ -54,6 +55,10 @@ private:
 	void SyncPivotFromBone();
 	void ApplyPivotToBone();
 	void DrawGizmoToolbar();
+	void DrawAnimationClips();
+	void LoadAnimationClips(const USkeletalMesh& Mesh);
+	const UAnimSequence* GetSelectedAnimationSequence() const;
+	void PreviewAnimationPose(const UAnimSequence& Sequence, double TimeSeconds);
 
 	// 우측 본 계층 트리 (Outliner처럼 클릭으로 선택)
 	void DrawBoneTree();
@@ -88,4 +93,15 @@ private:
 	TArray<int32> RootBones;
 	TArray<int32> BoneDepth;
 	int32 SelectedBone = INDEX_NONE;
+
+	TArray<FFbxAnimationClip> AnimationClips;
+	FString AnimationClipStatus;
+	int32 SelectedAnimationStack = INDEX_NONE;
+	int32 PreviewFrame = 0;
+
+	double PreviewTime = 0.0;
+	bool bPreviewPlaying = false;
+	bool bPreviewLooping = false;
+
+	void TickAnimationPreview(float DeltaTime);
 };

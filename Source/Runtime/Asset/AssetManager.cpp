@@ -18,13 +18,20 @@
 
 #include "Render/ImageLoader.h"
 #include <cctype>
-#include "FbxImporter/FbxImporter.h"
+#include <chrono>
+#include <format>
+#include "FbxImporter/FbxBake.h"
 #include "Render/SkeletalMesh.h"
 #include "Animation/AnimSequence.h"
 
 
 namespace
 {
+	FString GetAnimationAssetKey(const FString& MeshKey, int32 StackIndex)
+	{
+		return std::format("{}#Anim:{}", MeshKey, StackIndex);
+	}
+
 	FString GetAssetExtension(const FString& Path) {
 		const std::u8string UTF8Path{ Path.begin(), Path.end() };
 		FString Extension{ std::filesystem::path{ UTF8Path }.extension().string() };
@@ -264,23 +271,93 @@ void UAssetManager::LoadAsset(const FString& Key, const FString& Path) {
 	}
 }
 
-UAnimSequence* UAssetManager::LoadAnimationSequence(const FString& MeshKey, const FString& Path)
+UAssetManager::FAnimationSourceCache& UAssetManager::GetAnimationSourceCache(const FString& MeshKey, const FString& Path)
 {
-	const FString AnimKey = MeshKey + "#Anim:0";
+	int64 LastWriteTime = 0;
+	std::optional<int64> SourceTime;
+	if (FFbxBake::GetSourceTime(Path, LastWriteTime))
+	{
+		SourceTime = LastWriteTime;
+	}
+
+	FAnimationSourceCache& Cache = AnimationSourceCache.FindOrAdd(MeshKey);
+	if (!SourceTime || Cache.Path != Path || Cache.SourceTime != SourceTime)
+	{
+		// 기존 시퀀스를 참조하는 호출자를 위해 등록 키만 제거한다.
+		for (int32 StackIndex : Cache.RegisteredStacks)
+		{
+			AssetMap.Remove(GetAnimationAssetKey(MeshKey, StackIndex));
+		}
+		Cache = FAnimationSourceCache{};
+		Cache.Path = Path;
+		Cache.SourceTime = SourceTime;
+	}
+	return Cache;
+}
+
+UAnimSequence* UAssetManager::LoadAnimationSequence(const FString& MeshKey, const FString& Path, int32 StackIndex)
+{
+	FAnimationSourceCache& Cache = GetAnimationSourceCache(MeshKey, Path);
+	const FString AnimKey = GetAnimationAssetKey(MeshKey, StackIndex);
 
 	if (UAnimSequence* Existing = GetAssetByPath<UAnimSequence>(AnimKey))
 	{
 		return Existing;
 	}
 
-	UAnimSequence* Sequence = FFbxImporter::LoadAnimSequence(Path, 0, 30);
+	UAnimSequence* Sequence = FFbxImporter::LoadAnimSequence(Path, StackIndex, 30);
 	if (!Sequence)
 	{
 		return nullptr;
 	}
 
 	RegisterAsset(AnimKey, Sequence);
+	Cache.RegisteredStacks.Add(StackIndex);
 	return Sequence;
+}
+
+bool UAssetManager::LoadAnimationClips(const FString& MeshKey, const FString& Path, TArray<FFbxAnimationClip>& OutClips)
+{
+	const auto Start = std::chrono::steady_clock::now();
+	FAnimationSourceCache& Cache = GetAnimationSourceCache(MeshKey, Path);
+	if (Cache.Clips)
+	{
+		OutClips = *Cache.Clips;
+		const double ElapsedMilliseconds = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - Start).count();
+		HTR_LOG(Info, "[FBX ANIM] Load All Clips reused {} entries from memory in {:.1f} ms: {}",
+			OutClips.Num(), ElapsedMilliseconds, Path);
+		return true;
+	}
+
+	if (!FFbxImporter::LoadAnimationClips(Path, OutClips, [&MeshKey](int32 StackIndex)
+	{
+		return GetAssetByPath<UAnimSequence>(GetAnimationAssetKey(MeshKey, StackIndex));
+	}))
+	{
+		return false;
+	}
+
+	bool bCanCacheClips = Cache.SourceTime.has_value();
+	for (const FFbxAnimationClip& Clip : OutClips)
+	{
+		if (Clip.Sequence)
+		{
+			RegisterAsset(GetAnimationAssetKey(MeshKey, Clip.StackIndex), Clip.Sequence);
+			Cache.RegisteredStacks.Add(Clip.StackIndex);
+		}
+		else if (Clip.DurationSeconds > 0.0)
+		{
+			// 길이가 있는 클립은 다음 요청에서 다시 시도할 수 있게 한다.
+			bCanCacheClips = false;
+		}
+	}
+	if (bCanCacheClips)
+	{
+		Cache.Clips = OutClips;
+	}
+	const double ElapsedMilliseconds = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - Start).count();
+	HTR_LOG(Info, "[FBX ANIM] Load All Clips finished in {:.1f} ms: {}", ElapsedMilliseconds, Path);
+	return true;
 }
 
 void UAssetManager::CreateDefaultTextures() {
@@ -435,6 +512,7 @@ void UAssetManager::CreateEditorArrowMaterial() {
 
 void UAssetManager::Shutdown()
 {
+	Get().AnimationSourceCache.Empty();
 	Get().AssetMap.Empty();
 	Get().SoundMap.Empty();
 }
