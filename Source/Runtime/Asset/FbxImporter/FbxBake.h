@@ -1,16 +1,25 @@
 #pragma once
 
+#include "Animation/AnimData/IAnimationDataModel.h"
 #include "Core/Types.h"
 #include "Core/EngineString.h"
 
 struct FSkeletalMeshData;
 
-// FBX Import 결과(FSkeletalMeshData)를 <원본>.bin으로 저장하고 읽는다.
-// 뼈가 없는 FBX(StaticMesh)도 같은 형식으로 저장한다 (헤더의 AssetType으로 구분).
+struct FFbxAnimBakeData
+{
+	int32 NumFrames = 0;
+	TArray<FBoneAnimationTrack> Tracks;
+};
+
 class FFbxBake
 {
 public:
-	// .bin이 있고 형식·버전이 맞고 원본 FBX 수정 시간이 저장 당시와 같으면 읽는다. 아니면 nullptr (다시 Import)
+	// <원본>.bin에는 스태틱 메시와 스켈레탈 메시를 같은 형식으로 저장한다.
 	static TUniquePtr<FSkeletalMeshData> Read(const FString& BinPath, const FString& SourcePath);
 	static void Write(const FString& BinPath, const FString& SourcePath, const FSkeletalMeshData& Data);
+
+	static bool GetSourceTime(const FString& SourcePath, int64& OutTime);
+	static TUniquePtr<FFbxAnimBakeData> ReadAnimation(const FString& BinPath, int64 SourceTime, int32 StackIndex, int32 SampleRate);
+	static void WriteAnimation(const FString& BinPath, int64 SourceTime, int32 StackIndex, int32 SampleRate, const FFbxAnimBakeData& Data);
 };

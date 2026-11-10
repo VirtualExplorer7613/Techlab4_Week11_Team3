@@ -449,6 +449,7 @@ editor.ini
 # FBX Bake. 원본 수정 시간을 저장해 FBX가 바뀌면 자동으로 다시 Import한다. PC마다 파일 시간이 달라 공유하지 않는다
 *.fbx.bin
 *.FBX.bin
+*.[fF][bB][xX].anim_*.bin
 
 # 셰이더 컴파일 캐시 (실행 시 자동 생성)
 /Intermediate/
@@ -465,3 +466,18 @@ Tools/SnowMountain/build_snow_mountain.py
 # FBX SDK 바이너리. 위의 [Dd]ebug/ [Rr]elease/ 규칙에 걸리지 않게 다시 포함한다.
 !Source/ThirdParty/FBXSDK/lib/x64/debug/
 !Source/ThirdParty/FBXSDK/lib/x64/release/
+Assets/Models/tarisland-dragon-high-poly/source/Tarisland - Dragon/M_B_44_Qishilong_skin_Skeleton.FBX
+Assets/Models/tarisland-dragon-high-poly/source/Tarisland - Dragon/MI_M_B_44_Qishilong_body02_2_Inst.mat
+Assets/Models/tarisland-dragon-high-poly/source/Tarisland - Dragon/MI_M_B_44_Qishilong_body02_Inst.mat
+Assets/Models/tarisland-dragon-high-poly/source/Tarisland - Dragon/T_M_B_44_Qishilong_body01_B.png
+Assets/Models/tarisland-dragon-high-poly/source/Tarisland - Dragon/T_M_B_44_Qishilong_body01_mask.png
+Assets/Models/tarisland-dragon-high-poly/source/Tarisland - Dragon/T_M_B_44_Qishilong_body01_N.png
+Assets/Models/tarisland-dragon-high-poly/source/Tarisland - Dragon/T_M_B_44_Qishilong_body01_ORM.png
+Assets/Models/tarisland-dragon-high-poly/source/Tarisland - Dragon/T_M_B_44_Qishilong_body02_B.png
+Assets/Models/tarisland-dragon-high-poly/source/Tarisland - Dragon/T_M_B_44_Qishilong_body02_mask.png
+Assets/Models/tarisland-dragon-high-poly/source/Tarisland - Dragon/T_M_B_44_Qishilong_body02_N.png
+Assets/Models/tarisland-dragon-high-poly/source/Tarisland - Dragon/T_M_B_44_Qishilong_body02_ORM.png
+Assets/Models/tarisland-dragon-high-poly/textures/T_M_B_44_Qishilong_body01_B.png
+Assets/Models/tarisland-dragon-high-poly/textures/T_M_B_44_Qishilong_body01_N.png
+Assets/Models/tarisland-dragon-high-poly/textures/T_M_B_44_Qishilong_body02_B.png
+Assets/Models/tarisland-dragon-high-poly/textures/T_M_B_44_Qishilong_body02_N.png

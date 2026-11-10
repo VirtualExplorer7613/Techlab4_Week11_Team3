@@ -3,6 +3,8 @@
 #include "SkinnedMeshComponent.h"
 #include "SkeletalMeshComponent.generated.h"
 
+class UAnimSequence;
+
 UCLASS()
 class USkeletalMeshComponent : public USkinnedMeshComponent
 {
@@ -16,6 +18,10 @@ public:
 	// 인덱스로 뼈 하나의 Local(부모 기준) 행렬을 바꾼다. 반영은 ApplyPose
 	bool SetBoneLocalTransform(int32 BoneIndex, const FMatrix& Local);
 	void ApplyPose() { RefreshSkinning(LocalPose); }
+	bool ApplyLocalPose(TArray<FMatrix> InLocalPose);
+	bool ApplyAnimationPose(const UAnimSequence& Sequence, double TimeSeconds);
+	bool PlayAnimation(const UAnimSequence* Sequence, bool bLooping = false);
+	void TickComponent(float DeltaTime) override;
 
 	virtual void PostEditChangeProperty(const FProperty& Property) override;
 
@@ -30,4 +36,9 @@ protected:
 	FString TestBoneName = "upperarm_l";
 	UPROPERTY(EditAnywhere)
 	FRotator TestBoneRotation;
+
+private:
+	const UAnimSequence* PlayingSequence = nullptr;
+	double PlaybackTime = 0.0;
+	bool bLoopAnimation = false;
 };

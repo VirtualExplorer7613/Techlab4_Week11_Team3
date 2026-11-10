@@ -6,11 +6,21 @@
 #include <chrono>
 #include <cmath>
 #include <filesystem>
+#include <format>
+#include <limits>
+#include <optional>
 #include <utility>
 
 #include "Core/EngineLog.h"
 #include "FbxBake.h"
 #include "Render/SkeletalMeshData.h"
+#include "Animation/AnimTypes.h"
+#include "Math/EngineMath.h"
+
+#include "Animation/AnimSequence.h"
+#include "Animation/AnimData/AnimDataController.h"
+#include "Animation/AnimData/AnimDataModel.h"
+#include "UObject/UObjectGlobals.h"
 
 namespace
 {
@@ -188,7 +198,7 @@ namespace
 
 			const int32 Parent = Bones[i].ParentIndex;
 			Bones[i].RefLocal = Parent >= 0 ? Global * Globals[Parent].Inverse() : Global;
-			// 기본값: Cluster가 없는 뼈는 기본 자세를 바인드 자세로 사용
+			// 기본값: 스킨 가중치가 없는 뼈는 기본 자세를 바인드 자세로 사용
 			Bones[i].InvBindPose = Global.Inverse();
 		}
 	}
@@ -212,8 +222,8 @@ namespace
 			Settings.GetSystemUnit().GetScaleFactor());
 	}
 
-	// 여기서는 오른손 Z-Up 좌표계 변환만 한다. 왼손 좌표계로의 변환은 나중에
-	void ConvertToEngineSpace(FbxScene* Scene, FbxManager* Manager)
+	// 오른손 Z-Up 좌표계와 미터 단위로 변환한다. 왼손 좌표계로의 변환은 나중에 한다.
+	void ConvertToEngineSpace(FbxScene* Scene, FbxManager* Manager, bool bTriangulateMeshes)
 	{
 		LogSceneSpace("before", Scene);
 
@@ -231,18 +241,20 @@ namespace
 			FbxSystemUnit::m.ConvertScene(Scene);
 		}
 
-		// 모든 폴리곤을 삼각형으로 쪼갠다
-		FbxGeometryConverter Converter(Manager);
-		if (!Converter.Triangulate(Scene, true))
+		if (bTriangulateMeshes)
 		{
-			HTR_LOG(Warning, "FBX triangulate failed on some meshes");
+			FbxGeometryConverter Converter(Manager);
+			if (!Converter.Triangulate(Scene, true))
+			{
+				HTR_LOG(Warning, "FBX triangulate failed on some meshes");
+			}
 		}
 
 		LogSceneSpace("after", Scene);
 	}
 
-	// Context의 Scene을 파일을 읽어서 로드. 축변환, 삼각형화까지 한다.
-	bool LoadScene(const FString& Path, FFbxContext& Context)
+	// FBX 씬을 읽어 좌표축과 단위를 변환하고, 요청한 경우 메시를 삼각형화한다.
+	bool LoadScene(const FString& Path, FFbxContext& Context, bool bTriangulateMeshes = true)
 	{
 		Context.Manager = FbxManager::Create();
 
@@ -271,7 +283,7 @@ namespace
 
 		if (bImported)
 		{
-			ConvertToEngineSpace(Context.Scene, Context.Manager);
+			ConvertToEngineSpace(Context.Scene, Context.Manager, bTriangulateMeshes);
 		}
 
 		return bImported;
@@ -359,13 +371,10 @@ namespace
 		return Node->EvaluateGlobalTransform();
 	}
 
-	void ExtractMesh(FbxScene* Scene, const FString& Path, FStaticMeshData& MeshData)
+	void ExtractMesh(const TArray<FbxNode*>& MeshNodes, const FString& Path,
+		const TMap<FbxNode*, FbxAMatrix>& RigidMeshBindGlobals, FStaticMeshData& MeshData)
 	{
-		// 1. 메시 노드 수집
-		TArray<FbxNode*> MeshNodes;
-		CollectMeshNodes(Scene->GetRootNode(), MeshNodes);
-
-		// 2. 노드별 정점·인덱스 생성
+		// 노드별 정점·인덱스 생성
 		int32 CPOffset = 0;
 		TMap<FFbxVertexKey, uint32, FFbxVertexKeyHash> VertexCache;
 		TArray<TArray<uint32>> SlotIndices;
@@ -373,7 +382,8 @@ namespace
 		for (FbxNode* Node : MeshNodes)
 		{
 			FbxMesh* Mesh = Node->GetMesh();
-			const FbxAMatrix Global = GetMeshBindGlobal(Node);
+			const FbxAMatrix* RigidBind = RigidMeshBindGlobals.Find(Node);
+			const FbxAMatrix Global = RigidBind ? *RigidBind : GetMeshBindGlobal(Node);
 			FbxAMatrix NormalMatrix = Global;
 			NormalMatrix.SetT(FbxVector4(0.0, 0.0, 0.0, 0.0)); // NormalMatrix에서 이동에 대한 성분을 뺌
 
@@ -599,11 +609,18 @@ namespace
 		return false;
 	}
 
-	void ExtractSkin(FbxScene* Scene, const TArray<FbxNode*>& BoneNodes, FSkeletalMeshData& Data)
+	struct FFbxSkinData
 	{
-		if (Data.Bones.IsEmpty() || Data.Mesh.Vertices.IsEmpty())
+		TArray<FSkinWeight> ControlPointWeights;
+		TMap<FbxNode*, FbxAMatrix> RigidMeshBindGlobals;
+	};
+
+	FFbxSkinData ExtractSkin(const TArray<FbxNode*>& MeshNodes, const TArray<FbxNode*>& BoneNodes, TArray<FBoneInfo>& Bones)
+	{
+		FFbxSkinData Result;
+		if (Bones.IsEmpty())
 		{
-			return;
+			return Result;
 		}
 
 		// 1. 뼈 노드 → 뼈 번호
@@ -615,26 +632,48 @@ namespace
 
 		// 2. 기본 자세 Global (바인드 자세와 비교용)
 		TArray<FMatrix> RefGlobals;
-		for (int32 i = 0; i < Data.Bones.Num(); ++i)
+		for (int32 i = 0; i < Bones.Num(); ++i)
 		{
-			const int32 Parent = Data.Bones[i].ParentIndex;
-			RefGlobals.Add(Parent >= 0 ? Data.Bones[i].RefLocal * RefGlobals[Parent] : Data.Bones[i].RefLocal);
+			const int32 Parent = Bones[i].ParentIndex;
+			RefGlobals.Add(Parent >= 0 ? Bones[i].RefLocal * RefGlobals[Parent] : Bones[i].RefLocal);
 		}
 
-		// 3. Cluster 순회: Control Point별 (뼈, 비율) 수집
-		TArray<FbxNode*> MeshNodes;
-		CollectMeshNodes(Scene->GetRootNode(), MeshNodes);
-
+		// 3. Control Point별 스킨 가중치와 본 하위의 강체 부품을 수집한다.
 		TArray<TArray<std::pair<int32, float>>> CPInfluences;
+		TMap<FbxNode*, int32> RigidMeshBones;
+		TMap<int32, FbxAMatrix> BoneBindGlobals;
 		int32 CPOffset = 0;
 		int32 ClusterCount = 0;
+		int32 RigidControlPointCount = 0;
 		float MaxBindDiff = 0.0f;
 		for (FbxNode* Node : MeshNodes)
 		{
 			FbxMesh* Mesh = Node->GetMesh();
-			CPInfluences.SetNum(CPOffset + Mesh->GetControlPointsCount());
+			const int32 CPCount = Mesh->GetControlPointsCount();
+			const int32 CPEnd = CPOffset + CPCount;
+			CPInfluences.SetNum(CPEnd);
+			Result.ControlPointWeights.SetNum(CPEnd);
 
-			for (int32 d = 0; d < Mesh->GetDeformerCount(FbxDeformer::eSkin); ++d)
+			const int32 SkinCount = Mesh->GetDeformerCount(FbxDeformer::eSkin);
+			if (SkinCount == 0)
+			{
+				for (FbxNode* Parent = Node->GetParent(); Parent; Parent = Parent->GetParent())
+				{
+					if (const int32* BoneIndex = BoneIndexOf.Find(Parent))
+					{
+						RigidMeshBones.Add(Node, *BoneIndex);
+						for (int32 CP = CPOffset; CP < CPEnd; ++CP)
+						{
+							Result.ControlPointWeights[CP].BoneIndices[0] = *BoneIndex;
+							Result.ControlPointWeights[CP].Weights[0] = 1.0f;
+						}
+						RigidControlPointCount += CPEnd - CPOffset;
+						break;
+					}
+				}
+			}
+
+			for (int32 d = 0; d < SkinCount; ++d)
 			{
 				FbxSkin* Skin = static_cast<FbxSkin*>(Mesh->GetDeformer(d, FbxDeformer::eSkin));
 				for (int32 c = 0; c < Skin->GetClusterCount(); ++c)
@@ -646,13 +685,31 @@ namespace
 						continue;
 					}
 					const int32 Bone = *BoneFound;
+					const int32 Count = Cluster->GetControlPointIndicesCount();
+					const int* Indices = Cluster->GetControlPointIndices();
+					const double* Weights = Cluster->GetControlPointWeights();
+					bool bHasInfluence = false;
+					for (int32 k = 0; k < Count; ++k)
+					{
+						const int32 CP = Indices[k];
+						if (Weights[k] > 0.0 && CP >= 0 && CP < CPCount)
+						{
+							CPInfluences[CPOffset + CP].Add({ Bone, static_cast<float>(Weights[k]) });
+							bHasInfluence = true;
+						}
+					}
+					if (!bHasInfluence)
+					{
+						continue;
+					}
 					++ClusterCount;
 
 					// 3-1. InvBindPose = 바인드 순간 뼈 행렬의 역
 					FbxAMatrix BindMatrix;
 					Cluster->GetTransformLinkMatrix(BindMatrix);
 					const FMatrix Bind = ToEngineMatrix(BindMatrix);
-					Data.Bones[Bone].InvBindPose = Bind.Inverse();
+					Bones[Bone].InvBindPose = Bind.Inverse();
+					BoneBindGlobals.Add(Bone, BindMatrix);
 
 					// 3-2. 바인드 자세 vs 기본 자세 차이 (T-Pose 검증용)
 					for (int32 r = 0; r < 4; ++r)
@@ -662,31 +719,32 @@ namespace
 							MaxBindDiff = std::max(MaxBindDiff, std::abs(Bind.M[r][k] - RefGlobals[Bone].M[r][k]));
 						}
 					}
-
-					// 3-3. 이 뼈가 끄는 Control Point와 비율
-					const int32 Count = Cluster->GetControlPointIndicesCount();
-					const int* Indices = Cluster->GetControlPointIndices();
-					const double* Weights = Cluster->GetControlPointWeights();
-					for (int32 k = 0; k < Count; ++k)
-					{
-						const int32 CP = CPOffset + Indices[k];
-						if (Weights[k] > 0.0 && CP < CPInfluences.Num())
-						{
-							CPInfluences[CP].Add({ Bone, static_cast<float>(Weights[k]) });
-						}
-					}
 				}
 			}
 
-			CPOffset += Mesh->GetControlPointsCount();
+			CPOffset = CPEnd;
+		}
+
+		for (const auto& [Node, BoneIndex] : RigidMeshBones)
+		{
+			if (const FbxAMatrix* BindGlobal = BoneBindGlobals.Find(BoneIndex))
+			{
+				// 클러스터와 같은 본을 쓰는 부품의 정점도 그 본의 바인드 공간에 맞춘다.
+				const FbxAMatrix BoneRefGlobal = BoneNodes[BoneIndex]->EvaluateGlobalTransform();
+				Result.RigidMeshBindGlobals.Add(Node, *BindGlobal * BoneRefGlobal.Inverse() * Node->EvaluateGlobalTransform());
+			}
 		}
 
 		// 4. Control Point별 상위 4개 + 정규화
-		TArray<FSkinWeight> CPWeights;
-		CPWeights.SetNum(CPInfluences.Num());
 		int32 Unweighted = 0;
 		for (int32 cp = 0; cp < CPInfluences.Num(); ++cp)
 		{
+			FSkinWeight& Out = Result.ControlPointWeights[cp];
+			if (Out.Weights[0] > 0.0f)
+			{
+				continue; // 부모 본에 이미 강체로 연결된 점
+			}
+
 			TArray<std::pair<int32, float>>& List = CPInfluences[cp];
 			std::sort(List.begin(), List.end(), [](const std::pair<int32, float>& A, const std::pair<int32, float>& B) { return A.second > B.second; });
 
@@ -697,7 +755,6 @@ namespace
 				Sum += List[k].second;
 			}
 
-			FSkinWeight& Out = CPWeights[cp];
 			if (Sum <= 0.0f)
 			{
 				Out.Weights[0] = 1.0f; // 영향 없는 점은 0번(루트) 뼈를 따라감
@@ -711,7 +768,19 @@ namespace
 			}
 		}
 
-		// 5. 정점마다 원래 Control Point의 가중치 복사
+		HTR_LOG(Info, "FBX skin: clusters {}, rigid meshes {} ({} CPs), unweighted CPs {}, bind-vs-ref max diff {}",
+			ClusterCount, RigidMeshBones.Num(), RigidControlPointCount, Unweighted, MaxBindDiff);
+		return Result;
+	}
+
+	void ApplyControlPointWeights(const TArray<FSkinWeight>& CPWeights, FSkeletalMeshData& Data)
+	{
+		if (CPWeights.IsEmpty())
+		{
+			return;
+		}
+
+		// Tangent 계산으로 분리된 정점도 원래 Control Point의 가중치를 받는다.
 		Data.SkinWeights.SetNum(Data.Mesh.Vertices.Num());
 		for (int32 v = 0; v < Data.Mesh.Vertices.Num(); ++v)
 		{
@@ -721,9 +790,6 @@ namespace
 				Data.SkinWeights[v] = CPWeights[CP];
 			}
 		}
-
-		// 6. 결과 로그
-		HTR_LOG(Info, "FBX skin: clusters {}, unweighted CPs {}, bind-vs-ref max diff {}", ClusterCount, Unweighted, MaxBindDiff);
 	}
 }
 
@@ -741,6 +807,56 @@ namespace
 	double MillisecondsSince(std::chrono::steady_clock::time_point Start)
 	{
 		return std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - Start).count();
+	}
+
+	std::optional<int64> GetAnimationSourceTime(const FString& Path)
+	{
+		int64 SourceTime = 0;
+		if (FFbxBake::GetSourceTime(Path, SourceTime))
+		{
+			return SourceTime;
+		}
+		return std::nullopt;
+	}
+
+	UAnimSequence* CreateAnimSequence(const FString& Path, int32 SampleRate, const FFbxAnimBakeData& Data)
+	{
+		TUniquePtr<UAnimSequence> Sequence(NewObject<UAnimSequence>());
+		if (!Sequence || !Sequence->InitializeModel())
+		{
+			HTR_LOG(Error, "Failed to initialize animation sequence: {}", Path);
+			return nullptr;
+		}
+
+		TUniquePtr<UAnimDataModel> Model(Sequence->GetDataModel());
+		TUniquePtr<UAnimDataController> Controller(NewObject<UAnimDataController>());
+		if (!Controller)
+		{
+			HTR_LOG(Error, "Failed to create animation data controller: {}", Path);
+			return nullptr;
+		}
+
+		Controller->SetModel(Model.get());
+		Controller->SetFrameRate(FFrameRate(SampleRate, 1));
+		if (!Controller->SetNumberOfFrames(FFrameNumber(Data.NumFrames)))
+		{
+			HTR_LOG(Error, "Failed to set animation frame count: {}", Data.NumFrames);
+			return nullptr;
+		}
+
+		for (const FBoneAnimationTrack& Track : Data.Tracks)
+		{
+			const FRawAnimSequenceTrack& Keys = Track.InternalTrack;
+			if (!Controller->AddBoneTrack(Track.Name) ||
+				!Controller->SetBoneTrackKeys(Track.Name, Keys.PosKeys, Keys.RotKeys, Keys.ScaleKeys))
+			{
+				HTR_LOG(Error, "Failed to store animation track '{}'", Track.Name.ToString());
+				return nullptr;
+			}
+		}
+
+		(void)Model.release();
+		return Sequence.release();
 	}
 }
 
@@ -782,8 +898,11 @@ TUniquePtr<FSkeletalMeshData> FFbxImporter::LoadSkeletalMeshData(const FString& 
 		HTR_LOG(Warning, "FBX has skinned mesh but no skeleton node: {}", Path);
 	}
 	ExtractRefLocals(Data->Bones, BoneNodes);
-	ExtractMesh(Context.Scene, Path, Data->Mesh);
-	ExtractSkin(Context.Scene, BoneNodes, *Data);
+	TArray<FbxNode*> MeshNodes;
+	CollectMeshNodes(Context.Scene->GetRootNode(), MeshNodes);
+	const FFbxSkinData SkinData = ExtractSkin(MeshNodes, BoneNodes, Data->Bones);
+	ExtractMesh(MeshNodes, Path, SkinData.RigidMeshBindGlobals, Data->Mesh);
+	ApplyControlPointWeights(SkinData.ControlPointWeights, *Data);
 	LogLoadSummary(Path, "imported", MillisecondsSince(Start), *Data);
 
 	// 2. 다음 로드부터는 Bake를 읽는다
@@ -831,4 +950,225 @@ void FFbxImporter::PrintSkeleton(const FSkeletalMeshData& Data)
 
 		HTR_LOG(Info, "{}[{}] {}", FString(static_cast<size_t>(Depth) * 2, ' '), i, Bone.Name);
 	}
+}
+
+static UAnimSequence* LoadAnimSequenceInContext(const FString& Path, int32 StackIndex, int32 SampleRate,
+	FFbxContext& Context, std::optional<int64> SourceTime)
+{
+	if (SampleRate <= 0)
+	{
+		HTR_LOG(Error, "Invalid SampleRate");
+		return nullptr;
+	}
+
+	if (StackIndex < 0)
+	{
+		HTR_LOG(Error, "Invalid animation stack index: {}", StackIndex);
+		return nullptr;
+	}
+
+	const auto Start = std::chrono::steady_clock::now();
+	const FString BinPath = std::format("{}.anim_{}_{}.bin", Path, StackIndex, SampleRate);
+	if (SourceTime)
+	{
+		const TUniquePtr<FFbxAnimBakeData> Baked = FFbxBake::ReadAnimation(BinPath, *SourceTime, StackIndex, SampleRate);
+		if (UAnimSequence* Cached = Baked ? CreateAnimSequence(Path, SampleRate, *Baked) : nullptr)
+		{
+			HTR_LOG(Info, "[FBX ANIM] {} loaded from bake in {:.1f} ms", BinPath, MillisecondsSince(Start));
+			return Cached;
+		}
+	}
+
+	if (!Context.Scene && !LoadScene(Path, Context, /*bTriangulateMeshes=*/false))
+	{
+		return nullptr;
+	}
+
+	FbxScene* Scene = Context.Scene;
+
+	const int32 StackCount = Scene->GetSrcObjectCount<FbxAnimStack>();
+
+	if (StackIndex >= StackCount)
+	{
+		HTR_LOG(Error, "Invalid animation stack index: {} (stack count: {})", StackIndex, StackCount);
+		return nullptr;
+	}
+
+	FbxAnimStack* AnimStack = Scene->GetSrcObject<FbxAnimStack>(StackIndex);
+	if (!AnimStack)
+	{
+		HTR_LOG(Error, "Failed to get animation stack: {}", StackIndex);
+		return nullptr;
+	}
+
+	Scene->SetCurrentAnimationStack(AnimStack);
+
+	const FbxTimeSpan TimeSpan = AnimStack->GetLocalTimeSpan();
+	const double StartSeconds = TimeSpan.GetStart().GetSecondDouble();
+	const double EndSeconds = TimeSpan.GetStop().GetSecondDouble();
+	const double DurationSeconds = EndSeconds - StartSeconds;
+
+	if (DurationSeconds <= 0.0)
+	{
+		HTR_LOG(Error, "Invalid animation duration: {} seconds", DurationSeconds);
+		return nullptr;
+	}
+
+	HTR_LOG(Info, "FBX animation '{}': {:.3f}s to {:.3f}s, duration {:.3f}s", AnimStack->GetName(), StartSeconds, EndSeconds, DurationSeconds);
+
+	const double FrameCount = std::floor(DurationSeconds * SampleRate);
+
+	if (!std::isfinite(FrameCount) || FrameCount < 1.0 || FrameCount >= std::numeric_limits<int32>::max())
+	{
+		HTR_LOG(Error, "Unsupported animation frame count: {}", FrameCount);
+		return nullptr;
+	}
+
+	const int32 NumFrames = static_cast<int32>(FrameCount);
+	const int32 NumKeys = NumFrames + 1;
+	const double SampleInterval = 1.0 / SampleRate;
+
+	TArray<FBoneInfo> Bones;
+	TArray<FbxNode*> BoneNodes;
+
+	CollectBones(Scene->GetRootNode(), -1, Bones, BoneNodes);
+
+	if (Bones.IsEmpty())
+	{
+		HTR_LOG(Error, "No skeleton bones in FBX: {}", Path);
+		return nullptr;
+	}
+
+	FFbxAnimBakeData Data;
+	Data.NumFrames = NumFrames;
+	Data.Tracks.SetNum(Bones.Num());
+	for (int32 BoneIndex = 0; BoneIndex < Bones.Num(); ++BoneIndex)
+	{
+		Data.Tracks[BoneIndex].Name = FName(Bones[BoneIndex].Name);
+	}
+
+	TArray<FMatrix> Globals;
+	Globals.SetNum(Bones.Num());
+
+	for (int32 KeyIndex = 0; KeyIndex < NumKeys; ++KeyIndex)
+	{
+		FbxTime SampleTime;
+		SampleTime.SetSecondDouble(StartSeconds + KeyIndex * SampleInterval);
+
+		for (int32 BoneIndex = 0; BoneIndex < Bones.Num(); ++BoneIndex)
+		{
+			const FMatrix Global = ToEngineMatrix(BoneNodes[BoneIndex]->EvaluateGlobalTransform(SampleTime));
+			Globals[BoneIndex] = Global;
+
+			FMatrix Local = Global;
+			const int32 ParentIndex = Bones[BoneIndex].ParentIndex;
+
+			if (ParentIndex >= 0)
+			{
+				const FMatrix& ParentGlobal = Globals[ParentIndex];
+				const float Determinant = ParentGlobal.Determinant();
+
+				if (!std::isfinite(Determinant) || FMath::IsNearlyZero(Determinant))
+				{
+					HTR_LOG(Error, "Cannot invert parent of bone '{}' at key {}", Bones[BoneIndex].Name, KeyIndex);
+					return nullptr;
+				}
+
+				Local = Global * ParentGlobal.Inverse();
+			}
+
+			FLocalBoneTransform Transform;
+			if (!FLocalBoneTransform::TryFromMatrix(Local, Transform))
+			{
+				HTR_LOG(Error, "Cannot decompose bone '{}' at key {}",	Bones[BoneIndex].Name, KeyIndex);
+				return nullptr;
+			}
+
+			FRawAnimSequenceTrack& Track = Data.Tracks[BoneIndex].InternalTrack;
+			Track.PosKeys.Add(Transform.Position);
+			Track.RotKeys.Add(Transform.Rotation);
+			Track.ScaleKeys.Add(Transform.Scale);
+		}
+	}
+
+	UAnimSequence* Sequence = CreateAnimSequence(Path, SampleRate, Data);
+	if (!Sequence)
+	{
+		return nullptr;
+	}
+
+	int64 CurrentSourceTime = 0;
+	if (SourceTime && FFbxBake::GetSourceTime(Path, CurrentSourceTime) && CurrentSourceTime == *SourceTime)
+	{
+		FFbxBake::WriteAnimation(BinPath, *SourceTime, StackIndex, SampleRate, Data);
+	}
+
+	HTR_LOG(Info, "Imported animation '{}' with {} bone tracks and {} keys per track in {:.1f} ms",
+		AnimStack->GetName(), Data.Tracks.Num(), NumKeys, MillisecondsSince(Start));
+	return Sequence;
+}
+
+UAnimSequence* FFbxImporter::LoadAnimSequence(const FString& Path, int32 StackIndex, int32 SampleRate)
+{
+	FFbxContext Context;
+	return LoadAnimSequenceInContext(Path, StackIndex, SampleRate, Context, GetAnimationSourceTime(Path));
+}
+
+bool FFbxImporter::LoadAnimationClips(const FString& Path, TArray<FFbxAnimationClip>& OutClips,
+	const std::function<UAnimSequence*(int32)>& FindLoadedClip, int32 SampleRate)
+{
+	OutClips.Reset();
+	// Keep the imported scene open while sampling each stack that misses the cache.
+	const std::optional<int64> SourceTime = GetAnimationSourceTime(Path);
+	FFbxContext Context;
+	const auto SceneStart = std::chrono::steady_clock::now();
+	const bool bSceneLoaded = LoadScene(Path, Context, /*bTriangulateMeshes=*/false);
+	HTR_LOG(Info, "[FBX ANIM] LoadScene took {:.1f} ms: {}", MillisecondsSince(SceneStart), Path);
+	if (!bSceneLoaded)
+	{
+		return false;
+	}
+
+	const auto ClipsStart = std::chrono::steady_clock::now();
+	int32 MemoryHits = 0;
+	int32 FailedClips = 0;
+	double FailedClipMilliseconds = 0.0;
+	const int32 StackCount = Context.Scene->GetSrcObjectCount<FbxAnimStack>();
+	for (int32 StackIndex = 0; StackIndex < StackCount; ++StackIndex)
+	{
+		const FbxAnimStack* Stack = Context.Scene->GetSrcObject<FbxAnimStack>(StackIndex);
+		if (!Stack)
+		{
+			continue;
+		}
+
+		const FbxTimeSpan TimeSpan = Stack->GetLocalTimeSpan();
+		UAnimSequence* Sequence = FindLoadedClip ? FindLoadedClip(StackIndex) : nullptr;
+		if (Sequence)
+		{
+			++MemoryHits;
+		}
+		else
+		{
+			const auto ClipStart = std::chrono::steady_clock::now();
+			Sequence = LoadAnimSequenceInContext(Path, StackIndex, SampleRate, Context, SourceTime);
+			if (!Sequence)
+			{
+				const double ElapsedMilliseconds = MillisecondsSince(ClipStart);
+				++FailedClips;
+				FailedClipMilliseconds += ElapsedMilliseconds;
+				HTR_LOG(Warning, "[FBX ANIM] Clip {} '{}' failed after {:.1f} ms",
+					StackIndex, Stack->GetName(), ElapsedMilliseconds);
+			}
+		}
+		OutClips.Add({
+			StackIndex,
+			Stack->GetName(),
+			TimeSpan.GetStop().GetSecondDouble() - TimeSpan.GetStart().GetSecondDouble(),
+			Sequence
+		});
+	}
+	HTR_LOG(Info, "[FBX ANIM] Clip processing took {:.1f} ms ({} clips, {} memory hits, {} failed in {:.1f} ms)",
+		MillisecondsSince(ClipsStart), OutClips.Num(), MemoryHits, FailedClips, FailedClipMilliseconds);
+	return true;
 }
