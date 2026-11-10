@@ -33,9 +33,19 @@ bool USkeletalMeshComponent::ApplyAnimationPose(const UAnimSequence& Sequence, d
 		return false;
 	}
 
-	LocalPose = std::move(EvaluatedPose);
-	ApplyPose();
-	return true;
+	return ApplyLocalPose(std::move(EvaluatedPose));
+}
+
+bool USkeletalMeshComponent::ApplyLocalPose(TArray<FMatrix> InLocalPose)
+{
+    if (!SkeletalMesh || InLocalPose.Num() != SkeletalMesh->Data.Bones.Num())
+    {
+        return false;
+    }
+
+    LocalPose = std::move(InLocalPose);
+    ApplyPose();
+    return true;
 }
 
 bool USkeletalMeshComponent::PlayAnimation(const UAnimSequence* Sequence, bool bLooping)

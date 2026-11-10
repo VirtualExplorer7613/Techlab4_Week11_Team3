@@ -11,3 +11,12 @@ struct FRawAnimSequenceTrack
     TArray<FQuat> RotKeys;
     TArray<FVector> ScaleKeys;
 };
+
+struct FLocalBoneTransform
+{
+    static bool TryFromMatrix(const FMatrix& Local, FLocalBoneTransform& OutTransform);
+
+    FVector Position;
+    FQuat Rotation;
+    FVector Scale;
+};

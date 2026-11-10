@@ -4,6 +4,8 @@
 #include "Editor/Viewports/EditorViewportClient.h"
 #include "Editor/Gizmo/Gizmo.h"
 #include "Asset/FbxImporter/FbxImporter.h"
+#include "Animation/AnimNode_BlendSpacePlayer.h"
+#include "Animation/AnimNode_SequencePlayer.h"
 
 class UWorld;
 class USkeletalMesh;
@@ -56,9 +58,13 @@ private:
 	void ApplyPivotToBone();
 	void DrawGizmoToolbar();
 	void DrawAnimationClips();
+	void DrawBlendSpacePreview();
+	void RebuildPreviewBlendSpace();
+	void DrawPreviewPlaybackControls(bool bCanPlay, bool bAtEnd);
+	void ResetAnimationPreview();
 	void LoadAnimationClips(const USkeletalMesh& Mesh);
-	const UAnimSequence* GetSelectedAnimationSequence() const;
-	void PreviewAnimationPose(const UAnimSequence& Sequence, double TimeSeconds);
+	const FFbxAnimationClip* FindAnimationClip(int32 StackIndex) const;
+	void PreviewAnimationPose(float DeltaTime = 0.0f);
 
 	// 우측 본 계층 트리 (Outliner처럼 클릭으로 선택)
 	void DrawBoneTree();
@@ -97,9 +103,24 @@ private:
 	TArray<FFbxAnimationClip> AnimationClips;
 	FString AnimationClipStatus;
 	int32 SelectedAnimationStack = INDEX_NONE;
+	int32 SelectedBlendAnimationStack = INDEX_NONE;
 	int32 PreviewFrame = 0;
 
-	double PreviewTime = 0.0;
+	FAnimNode_SequencePlayer PreviewPlayerA;
+	FAnimNode_SequencePlayer PreviewPlayerB;
+
+	struct FBlendSpacePreviewRow
+	{
+		int32 StackIndex = INDEX_NONE;
+		char Value[32] = {};
+		const char* ValueError = nullptr;
+	};
+
+	TArray<FBlendSpacePreviewRow> BlendSpacePreviewRows;
+	UBlendSpace1D* PreviewBlendSpace = nullptr;
+	FAnimNode_BlendSpacePlayer PreviewBlendSpacePlayer;
+	float PreviewBlendAlpha = 0.0f;
+	bool bUseBlendSpace = false;
 	bool bPreviewPlaying = false;
 	bool bPreviewLooping = false;
 

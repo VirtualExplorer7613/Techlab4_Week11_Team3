@@ -9,15 +9,29 @@
 #include "Asset/AssetManager.h"
 #include "Animation/AnimSequence.h"
 #include "Animation/AnimData/AnimDataModel.h"
+#include "Animation/AnimNodeContext.h"
+#include "Animation/AnimNode_SequencePlayer.h"
+#include "Animation/AnimNode_TwoWayBlend.h"
+#include "Animation/BlendSpace1D.h"
+#include "UObject/UObjectGlobals.h"
 
 #include <algorithm>
+#include <charconv>
 #include <cmath>
+#include <cstring>
 #include <format>
+#include <limits>
 
 namespace
 {
 	// 에디터 기본 들여쓰기(18px)는 깊은 계층에서 이름을 밀어내므로 좁힌다
 	constexpr float BONE_TREE_INDENT = 8.0f;
+
+	const char* GetClipDisplayName(const FFbxAnimationClip& Clip)
+	{
+		const size_t Separator = Clip.Name.find_last_of('|');
+		return Clip.Name.c_str() + (Separator == FString::npos ? 0 : Separator + 1);
+	}
 }
 
 bool FSkeletalMeshViewerPanel::Init()
@@ -76,27 +90,39 @@ void FSkeletalMeshViewerPanel::TickAnimationPreview(float DeltaTime)
 		return;
 	}
 
-	const UAnimSequence* Sequence = GetSelectedAnimationSequence();
-	const UAnimDataModel* Model = Sequence ? Sequence->GetDataModel() : nullptr;
-	const double FPS = Model ? Model->GetFrameRate().AsDecimal() : 0.0;
-	const int32 NumKeys = Model ? Model->GetNumberOfKeys() : 0;
-	if (NumKeys <= 1 || !std::isfinite(FPS) || FPS <= 0.0)
+	if (bUseBlendSpace)
+	{
+		PreviewAnimationPose(DeltaTime);
+		const double Phase = PreviewBlendSpacePlayer.GetPhase();
+		bPreviewPlaying = PreviewBlendSpacePlayer.GetDuration() > 0.0 && (bPreviewLooping || Phase < 1.0);
+		return;
+	}
+
+	const double DurationA = PreviewPlayerA.GetDuration();
+	const double DurationB = PreviewPlayerB.GetDuration();
+	if (!PreviewPlayerA.Sequence || (DurationA <= 0.0 && DurationB <= 0.0))
 	{
 		bPreviewPlaying = false;
 		return;
 	}
 
-	const int32 LastFrame = NumKeys - 1;
-	const double EndTime = LastFrame / FPS;
-	PreviewTime += DeltaTime;
-	if (PreviewTime >= EndTime)
+	PreviewPlayerA.bLoop = bPreviewLooping;
+	PreviewPlayerB.bLoop = bPreviewLooping;
+	PreviewAnimationPose(DeltaTime);
+
+	if (DurationA > 0.0)
 	{
-		PreviewTime = bPreviewLooping ? std::fmod(PreviewTime, EndTime) : EndTime;
-		bPreviewPlaying = bPreviewLooping;
+		const UAnimDataModel* Model = PreviewPlayerA.Sequence->GetDataModel();
+		const int32 LastFrame = Model->GetNumberOfKeys() - 1;
+		const double FPS = Model->GetFrameRate().AsDecimal();
+		PreviewFrame = PreviewPlayerA.CurrentTime >= DurationA
+			? LastFrame : std::min(LastFrame, static_cast<int32>(PreviewPlayerA.CurrentTime * FPS));
 	}
 
-	PreviewFrame = PreviewTime >= EndTime ? LastFrame : static_cast<int32>(PreviewTime * FPS);
-	PreviewAnimationPose(*Sequence, PreviewTime);
+	if (!bPreviewLooping && PreviewPlayerA.CurrentTime >= DurationA && PreviewPlayerB.CurrentTime >= DurationB)
+	{
+		bPreviewPlaying = false;
+	}
 }
 
 void FSkeletalMeshViewerPanel::OnRender()
@@ -177,12 +203,7 @@ void FSkeletalMeshViewerPanel::OpenAsset(USkeletalMesh* Mesh)
 		return;
 	// 이전 메시의 본 인덱스가 새 메시에서 엉뚱한 본을 가리키지 않게 선택부터 비운다
 	SelectedBone = INDEX_NONE;
-	AnimationClips.Reset();
-	AnimationClipStatus.clear();
-	SelectedAnimationStack = INDEX_NONE;
-	PreviewFrame = 0;
-	PreviewTime = 0.0;
-	bPreviewPlaying = false;
+	ResetAnimationPreview();
 	BoneGizmo.SetTarget(nullptr);
 	PreviewActor->GetSkeletalMeshComponent()->SetSkeletalMesh(Mesh);
 	PreviewActor->GetSkeletalMeshComponent()->ApplyPose();
@@ -193,6 +214,7 @@ void FSkeletalMeshViewerPanel::OpenAsset(USkeletalMesh* Mesh)
 
 void FSkeletalMeshViewerPanel::Shutdown()
 {
+	ResetAnimationPreview();
 	// UObject 해제는 FEngineLoop가 종료 때 일괄로 한다. 여기서는 컴포넌트 등록과 씬 프록시만 정리한다
 	if (PreviewWorld)
 		PreviewWorld->ClearWorld();
@@ -496,15 +518,28 @@ void FSkeletalMeshViewerPanel::DrawGizmoToolbar()
 	}
 }
 
-void FSkeletalMeshViewerPanel::LoadAnimationClips(const USkeletalMesh& Mesh)
+void FSkeletalMeshViewerPanel::ResetAnimationPreview()
 {
+	PreviewPlayerA = {};
+	PreviewPlayerB = {};
+	PreviewBlendSpacePlayer = {};
+	BlendSpacePreviewRows.Reset();
+	if (PreviewBlendSpace)
+	{
+		PreviewBlendSpace->ResetSamples();
+	}
+	bUseBlendSpace = false;
 	AnimationClips.Reset();
 	AnimationClipStatus.clear();
 	SelectedAnimationStack = INDEX_NONE;
+	SelectedBlendAnimationStack = INDEX_NONE;
 	PreviewFrame = 0;
-	PreviewTime = 0.0;
 	bPreviewPlaying = false;
+}
 
+void FSkeletalMeshViewerPanel::LoadAnimationClips(const USkeletalMesh& Mesh)
+{
+	ResetAnimationPreview();
 	const FString& MeshKey = Mesh.GetPath();
 	const FString Path = "Assets/" + MeshKey;
 	if (!UAssetManager::Get().LoadAnimationClips(MeshKey, Path, AnimationClips))
@@ -518,24 +553,55 @@ void FSkeletalMeshViewerPanel::LoadAnimationClips(const USkeletalMesh& Mesh)
 	}
 }
 
-const UAnimSequence* FSkeletalMeshViewerPanel::GetSelectedAnimationSequence() const
+const FFbxAnimationClip* FSkeletalMeshViewerPanel::FindAnimationClip(int32 StackIndex) const
 {
 	for (const FFbxAnimationClip& Clip : AnimationClips)
 	{
-		if (Clip.StackIndex == SelectedAnimationStack)
+		if (Clip.StackIndex == StackIndex)
 		{
-			return Clip.Sequence;
+			return &Clip;
 		}
 	}
 	return nullptr;
 }
 
-void FSkeletalMeshViewerPanel::PreviewAnimationPose(const UAnimSequence& Sequence, double TimeSeconds)
+void FSkeletalMeshViewerPanel::PreviewAnimationPose(float DeltaTime)
 {
 	USkeletalMeshComponent* Component = PreviewActor ? PreviewActor->GetSkeletalMeshComponent() : nullptr;
-	if (Component)
+	const USkeletalMesh* Mesh = Component ? Component->GetSkeletalMesh() : nullptr;
+	if (!Mesh)
 	{
-		Component->ApplyAnimationPose(Sequence, TimeSeconds);
+		return;
+	}
+
+	FPoseContext Output{ Mesh->Data.Bones };
+	if (bUseBlendSpace)
+	{
+		PreviewBlendSpacePlayer.bLoop = bPreviewLooping;
+		PreviewBlendSpacePlayer.Update({ DeltaTime });
+		PreviewBlendSpacePlayer.Evaluate(Output);
+		if (PreviewBlendSpace->GetSamples().IsEmpty())
+		{
+			Output.Samples.SetNum(Output.Bones.Num());
+		}
+	}
+	else
+	{
+		FAnimNode_TwoWayBlend Blend;
+		Blend.A.Node = &PreviewPlayerA;
+		Blend.B.Node = &PreviewPlayerB;
+		Blend.Alpha = PreviewBlendAlpha;
+		if (DeltaTime > 0.0f)
+		{
+			Blend.Update({ DeltaTime });
+		}
+		Blend.Evaluate(Output);
+	}
+
+	TArray<FMatrix> LocalPose;
+	if (UAnimSequence::BuildLocalPoseMatrices(Output.Bones, Output.Samples, LocalPose))
+	{
+		Component->ApplyLocalPose(std::move(LocalPose));
 	}
 }
 
@@ -555,14 +621,35 @@ void FSkeletalMeshViewerPanel::DrawAnimationClips()
 		ImGui::TextWrapped("%s", AnimationClipStatus.c_str());
 	}
 
+	ImGui::BeginDisabled(AnimationClips.IsEmpty());
+	const bool bModeChanged = ImGui::Checkbox("Blend Space 1D", &bUseBlendSpace);
+	ImGui::EndDisabled();
+	if (bUseBlendSpace)
+	{
+		if (bModeChanged)
+		{
+			if (!PreviewBlendSpacePlayer.BlendSpace)
+			{
+				const int32 StackB = SelectedBlendAnimationStack != INDEX_NONE ? SelectedBlendAnimationStack : SelectedAnimationStack;
+				BlendSpacePreviewRows.Add(FBlendSpacePreviewRow{ SelectedAnimationStack, "0" });
+				BlendSpacePreviewRows.Add(FBlendSpacePreviewRow{ StackB, "1" });
+				RebuildPreviewBlendSpace();
+			}
+			const double DurationA = PreviewPlayerA.GetDuration();
+			PreviewBlendSpacePlayer.SetPhase(DurationA > 0.0 ? PreviewPlayerA.CurrentTime / DurationA : 0.0);
+			PreviewAnimationPose();
+			bPreviewPlaying = bPreviewPlaying && PreviewBlendSpacePlayer.GetDuration() > 0.0;
+		}
+		DrawBlendSpacePreview();
+		return;
+	}
+
 	bool bSelectionChanged = false;
 	for (const FFbxAnimationClip& Clip : AnimationClips)
 	{
-		const size_t Separator = Clip.Name.find_last_of('|');
-		const FString DisplayName = Separator == FString::npos ? Clip.Name : Clip.Name.substr(Separator + 1);
 		const UAnimDataModel* Model = Clip.Sequence ? Clip.Sequence->GetDataModel() : nullptr;
 		const double Duration = Model ? Model->GetPlayLength() : Clip.DurationSeconds;
-		const FString Label = std::format("{}  {:.2f}s{}###Clip", DisplayName, Duration, Model ? "" : "  (Failed)");
+		const FString Label = std::format("{}  {:.2f}s{}###Clip", GetClipDisplayName(Clip), Duration, Model ? "" : "  (Failed)");
 
 		ImGui::PushID(Clip.StackIndex);
 		if (ImGui::Selectable(Label.c_str(), SelectedAnimationStack == Clip.StackIndex))
@@ -571,8 +658,9 @@ void FSkeletalMeshViewerPanel::DrawAnimationClips()
 			if (NewSelection != SelectedAnimationStack)
 			{
 				SelectedAnimationStack = NewSelection;
+				PreviewPlayerA.Sequence = Model ? Clip.Sequence : nullptr;
+				PreviewPlayerA.CurrentTime = 0.0;
 				PreviewFrame = 0;
-				PreviewTime = 0.0;
 				bPreviewPlaying = false;
 				bSelectionChanged = true;
 			}
@@ -584,28 +672,273 @@ void FSkeletalMeshViewerPanel::DrawAnimationClips()
 		ImGui::PopID();
 	}
 
-	const UAnimSequence* Sequence = GetSelectedAnimationSequence();
+	bool bBlendClipChanged = false;
+	const FFbxAnimationClip* SelectedBlendClip = FindAnimationClip(SelectedBlendAnimationStack);
+	const char* BlendClipName = SelectedBlendClip ? SelectedBlendClip->Name.c_str() : "Same clip as A";
+	ImGui::BeginDisabled(AnimationClips.IsEmpty());
+	if (ImGui::BeginCombo("Clip B", BlendClipName))
+	{
+		if (ImGui::Selectable("Same clip as A", SelectedBlendAnimationStack == INDEX_NONE))
+		{
+			bBlendClipChanged = SelectedBlendAnimationStack != INDEX_NONE;
+			SelectedBlendAnimationStack = INDEX_NONE;
+		}
+		for (const FFbxAnimationClip& Clip : AnimationClips)
+		{
+			if (!Clip.Sequence || !Clip.Sequence->GetDataModel())
+			{
+				continue;
+			}
+			ImGui::PushID(Clip.StackIndex);
+			if (ImGui::Selectable(Clip.Name.c_str(), SelectedBlendAnimationStack == Clip.StackIndex))
+			{
+				bBlendClipChanged = SelectedBlendAnimationStack != Clip.StackIndex;
+				SelectedBlendAnimationStack = Clip.StackIndex;
+			}
+			ImGui::PopID();
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::EndDisabled();
+
+	if (bSelectionChanged || bBlendClipChanged)
+	{
+		const FFbxAnimationClip* ClipB = FindAnimationClip(SelectedBlendAnimationStack);
+		PreviewPlayerB.Sequence = ClipB ? ClipB->Sequence : PreviewPlayerA.Sequence;
+		PreviewPlayerB.CurrentTime = 0.0;
+	}
+
+	const UAnimSequence* Sequence = PreviewPlayerA.Sequence;
 	const UAnimDataModel* Model = Sequence ? Sequence->GetDataModel() : nullptr;
 	const int32 NumKeys = Model ? Model->GetNumberOfKeys() : 0;
 	const int32 LastFrame = NumKeys > 0 ? NumKeys - 1 : 0;
 	const double FPS = Model ? Model->GetFrameRate().AsDecimal() : 0.0;
 	const bool bValidRate = std::isfinite(FPS) && FPS > 0.0;
+	const double DurationA = PreviewPlayerA.GetDuration();
+	const double DurationB = PreviewPlayerB.GetDuration();
+	if (bModeChanged)
+	{
+		const double Phase = PreviewBlendSpacePlayer.GetPhase();
+		PreviewPlayerA.CurrentTime = Phase * DurationA;
+		PreviewPlayerB.CurrentTime = Phase * DurationB;
+		PreviewFrame = static_cast<int32>(Phase * LastFrame);
+	}
+
 	ImGui::BeginDisabled(LastFrame == 0 || !bValidRate);
 	const bool bFrameChanged = ImGui::SliderInt("Frame", &PreviewFrame, 0, LastFrame, "%d", ImGuiSliderFlags_AlwaysClamp);
+	ImGui::EndDisabled();
+	ImGui::BeginDisabled(NumKeys == 0 || !bValidRate);
+	const bool bBlendInputChanged = ImGui::SliderFloat("Blend Alpha", &PreviewBlendAlpha, 0.0f, 1.0f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
+	ImGui::EndDisabled();
 
-	if (NumKeys > 0 && bValidRate && (bSelectionChanged || bFrameChanged))
+	if (NumKeys > 0 && bValidRate && (bSelectionChanged || bFrameChanged || bBlendInputChanged || bBlendClipChanged || bModeChanged))
 	{
-		PreviewTime = PreviewFrame / FPS;
-		PreviewAnimationPose(*Sequence, PreviewTime);
+		if (bFrameChanged)
+		{
+			PreviewPlayerA.CurrentTime = PreviewFrame / FPS;
+		}
+		PreviewAnimationPose();
 	}
+	const bool bAEnded = PreviewPlayerA.CurrentTime >= DurationA;
+	const bool bBEnded = PreviewPlayerB.CurrentTime >= DurationB;
+	const bool bAtEnd = (bAEnded && bBEnded)
+		|| (bAEnded && DurationA > 0.0 && PreviewBlendAlpha == 0.0f)
+		|| (bBEnded && DurationB > 0.0 && PreviewBlendAlpha == 1.0f);
+	DrawPreviewPlaybackControls(NumKeys > 0 && bValidRate && (DurationA > 0.0 || DurationB > 0.0), bAtEnd);
+	if (PreviewPlayerB.Sequence)
+	{
+		ImGui::TextDisabled("Clip B time %.2f s", PreviewPlayerB.CurrentTime);
+	}
+}
+
+void FSkeletalMeshViewerPanel::RebuildPreviewBlendSpace()
+{
+	if (!PreviewBlendSpace)
+	{
+		PreviewBlendSpace = NewObject<UBlendSpace1D>();
+	}
+	PreviewBlendSpace->ResetSamples();
+	for (FBlendSpacePreviewRow& Row : BlendSpacePreviewRows)
+	{
+		Row.ValueError = nullptr;
+		if (Row.Value[0] == '\0')
+		{
+			continue;
+		}
+
+		float Value = 0.0f;
+		const char* End = Row.Value + std::strlen(Row.Value);
+		const auto [ParsedEnd, Error] = std::from_chars(Row.Value, End, Value);
+		// Leave headroom for ImGui's float slider range and its arithmetic.
+		constexpr float AxisLimit = std::numeric_limits<float>::max() / 4.0f;
+		if (Error != std::errc{} || ParsedEnd != End || !std::isfinite(Value) || std::abs(Value) > AxisLimit)
+		{
+			Row.ValueError = "Enter a finite sample value within the slider range.";
+			continue;
+		}
+
+		const FFbxAnimationClip* Clip = FindAnimationClip(Row.StackIndex);
+		if (Clip && !PreviewBlendSpace->AddSample(Clip->Sequence, FVector(Value, 0.0f, 0.0f)))
+		{
+			Row.ValueError = "This value is already in use. This sample is skipped.";
+		}
+	}
+
+	const TArray<FBlendSample>& Samples = PreviewBlendSpace->GetSamples();
+	if (!Samples.IsEmpty())
+	{
+		const float MinValue = Samples[0].SampleValue.X;
+		const float MaxValue = Samples.Last().SampleValue.X;
+		PreviewBlendSpacePlayer.Speed = std::clamp(PreviewBlendSpacePlayer.Speed, MinValue, MaxValue);
+	}
+	PreviewBlendSpacePlayer.BlendSpace = PreviewBlendSpace;
+}
+
+void FSkeletalMeshViewerPanel::DrawBlendSpacePreview()
+{
+	bool bSamplesChanged = false;
+	int32 RowToRemove = INDEX_NONE;
+	if (ImGui::BeginTable("BlendSpaceSamples", 3, ImGuiTableFlags_SizingStretchProp))
+	{
+		ImGui::TableSetupColumn("Clip", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Sample Value", ImGuiTableColumnFlags_WidthFixed);
+		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, ImGui::GetFrameHeight());
+		ImGui::TableHeadersRow();
+		for (int32 RowIndex = 0; RowIndex < BlendSpacePreviewRows.Num(); ++RowIndex)
+		{
+			FBlendSpacePreviewRow& Row = BlendSpacePreviewRows[RowIndex];
+			const FFbxAnimationClip* SelectedClip = FindAnimationClip(Row.StackIndex);
+			ImGui::PushID(RowIndex);
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn();
+			ImGui::SetNextItemWidth(-FLT_MIN);
+			if (ImGui::BeginCombo("##Clip", SelectedClip ? GetClipDisplayName(*SelectedClip) : "Select clip"))
+			{
+				for (const FFbxAnimationClip& Clip : AnimationClips)
+				{
+					if (!Clip.Sequence || !Clip.Sequence->GetDataModel())
+					{
+						continue;
+					}
+					const bool bSelected = Row.StackIndex == Clip.StackIndex;
+					ImGui::PushID(Clip.StackIndex);
+					if (ImGui::Selectable(GetClipDisplayName(Clip), bSelected) && !bSelected)
+					{
+						Row.StackIndex = Clip.StackIndex;
+						bSamplesChanged = true;
+					}
+					if (bSelected)
+					{
+						ImGui::SetItemDefaultFocus();
+					}
+					ImGui::PopID();
+				}
+				ImGui::EndCombo();
+			}
+
+			ImGui::TableNextColumn();
+			ImGui::SetNextItemWidth(-FLT_MIN);
+			if (Row.ValueError)
+			{
+				ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.50f, 0.16f, 0.16f, 1.0f));
+			}
+			if (ImGui::InputTextWithHint("##Value", "Value", Row.Value, sizeof(Row.Value), ImGuiInputTextFlags_CharsScientific))
+			{
+				bSamplesChanged = true;
+			}
+			if (Row.ValueError)
+			{
+				ImGui::PopStyleColor();
+				ImGui::SetItemTooltip("%s", Row.ValueError);
+			}
+
+			ImGui::TableNextColumn();
+			if (ImGui::Button("-##RemoveSample"))
+			{
+				RowToRemove = RowIndex;
+			}
+			ImGui::SetItemTooltip("Remove sample");
+			ImGui::PopID();
+		}
+		ImGui::EndTable();
+	}
+	if (RowToRemove != INDEX_NONE)
+	{
+		BlendSpacePreviewRows.RemoveAt(RowToRemove);
+		bSamplesChanged = true;
+	}
+	if (ImGui::Button("+ Add Sample"))
+	{
+		BlendSpacePreviewRows.Add(FBlendSpacePreviewRow{});
+	}
+	if (bSamplesChanged)
+	{
+		RebuildPreviewBlendSpace();
+	}
+
+	const TArray<FBlendSample>& Samples = PreviewBlendSpace->GetSamples();
+	const bool bHasSamples = !Samples.IsEmpty();
+	const float MinValue = bHasSamples ? Samples[0].SampleValue.X : 0.0f;
+	const float MaxValue = bHasSamples ? Samples.Last().SampleValue.X : 1.0f;
+	ImGui::BeginDisabled(!bHasSamples || MinValue == MaxValue);
+	const bool bInputChanged = ImGui::SliderFloat("Preview Input", &PreviewBlendSpacePlayer.Speed, MinValue, MaxValue, "%.4g", ImGuiSliderFlags_AlwaysClamp);
+	ImGui::EndDisabled();
+
+	const UAnimDataModel* FrameModel = bHasSamples ? Samples[0].Animation->GetDataModel() : nullptr;
+	const int32 LastFrame = FrameModel ? std::max(0, FrameModel->GetNumberOfKeys() - 1) : 0;
+	int32 Frame = static_cast<int32>(PreviewBlendSpacePlayer.GetPhase() * LastFrame);
+	ImGui::BeginDisabled(LastFrame == 0);
+	const bool bFrameChanged = ImGui::SliderInt("Frame", &Frame, 0, LastFrame, "%d", ImGuiSliderFlags_AlwaysClamp);
+	ImGui::SetItemTooltip("Frame numbers use the sample with the lowest value.");
+	ImGui::EndDisabled();
+	if (bFrameChanged)
+	{
+		PreviewBlendSpacePlayer.SetPhase(static_cast<double>(Frame) / LastFrame);
+	}
+	if (bSamplesChanged || bInputChanged || bFrameChanged)
+	{
+		PreviewAnimationPose();
+	}
+
+	DrawPreviewPlaybackControls(PreviewBlendSpacePlayer.GetDuration() > 0.0, PreviewBlendSpacePlayer.GetPhase() >= 1.0);
+	ImGui::TextDisabled("Cycle %.1f%%", PreviewBlendSpacePlayer.GetPhase() * 100.0);
+
+	TArray<FBlendSampleWeight> Weights;
+	FString ActiveText = "Active";
+	if (PreviewBlendSpace->GetSampleWeights(FVector(PreviewBlendSpacePlayer.Speed, 0.0f, 0.0f), Weights))
+	{
+		for (const FBlendSampleWeight& Weight : Weights)
+		{
+			const UAnimSequence* Animation = Samples[Weight.SampleIndex].Animation;
+			const auto Clip = std::find_if(AnimationClips.begin(), AnimationClips.end(),
+				[Animation](const FFbxAnimationClip& Candidate) { return Candidate.Sequence == Animation; });
+			if (Clip != AnimationClips.end())
+			{
+				ActiveText += std::format("  {} {:.1f}%", GetClipDisplayName(*Clip), Weight.Weight * 100.0f);
+			}
+		}
+	}
+	else
+	{
+		ActiveText += "  None";
+	}
+	ImGui::TextWrapped("%s", ActiveText.c_str());
+}
+
+void FSkeletalMeshViewerPanel::DrawPreviewPlaybackControls(bool bCanPlay, bool bAtEnd)
+{
+	bPreviewPlaying = bPreviewPlaying && bCanPlay;
+	ImGui::BeginDisabled(!bCanPlay);
 	if (ImGui::Button(bPreviewPlaying ? "Pause###PreviewPlayback" : "Play###PreviewPlayback"))
 	{
 		bPreviewPlaying = !bPreviewPlaying;
-		if (bPreviewPlaying && PreviewTime >= LastFrame / FPS)
+		if (bPreviewPlaying && bAtEnd)
 		{
-			PreviewTime = 0.0;
+			PreviewPlayerA.CurrentTime = 0.0;
+			PreviewPlayerB.CurrentTime = 0.0;
+			PreviewBlendSpacePlayer.SetPhase(0.0);
 			PreviewFrame = 0;
-			PreviewAnimationPose(*Sequence, PreviewTime);
+			PreviewAnimationPose();
 		}
 	}
 	ImGui::SameLine();

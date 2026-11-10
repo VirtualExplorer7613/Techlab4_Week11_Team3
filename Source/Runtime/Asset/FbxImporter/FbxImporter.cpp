@@ -791,77 +791,6 @@ namespace
 			}
 		}
 	}
-
-	FQuat QuatFromRotationRows(const FVector& X, const FVector& Y, const FVector& Z)
-	{
-		const float Trace = X.X + Y.Y + Z.Z;
-
-		if (Trace > 0.0f)
-		{
-			const float FourW = 2.0f * std::sqrt(1.0f + Trace);
-			return FQuat((Y.Z - Z.Y) / FourW, (Z.X - X.Z) / FourW, (X.Y - Y.X) / FourW, 0.25f * FourW);
-		}
-
-		if (X.X >= Y.Y && X.X >= Z.Z)
-		{
-			const float FourX = 2.0f * std::sqrt(1.0f + X.X - Y.Y - Z.Z);
-			return FQuat(0.25f * FourX, (X.Y + Y.X) / FourX, (X.Z + Z.X) / FourX, (Y.Z - Z.Y) / FourX);
-		}
-
-		if (Y.Y >= Z.Z)
-		{
-			const float FourY = 2.0f * std::sqrt(1.0f + Y.Y - X.X - Z.Z);
-			return FQuat((X.Y + Y.X) / FourY, 0.25f * FourY, (Y.Z + Z.Y) / FourY, (Z.X - X.Z) / FourY);
-		}
-
-		const float FourZ = 2.0f * std::sqrt(1.0f + Z.Z - X.X - Y.Y);
-		return FQuat((X.Z + Z.X) / FourZ, (Y.Z + Z.Y) / FourZ, 0.25f * FourZ, (X.Y - Y.X) / FourZ);
-	}
-
-	bool TryDecomposeBoneLocal(const FMatrix& Local, FVector& OutPosition, FQuat& OutRotation, FVector& OutScale)
-	{
-		const FVector Position(Local.M[3][0], Local.M[3][1], Local.M[3][2]);
-
-		FVector X(Local.M[0][0], Local.M[0][1], Local.M[0][2]);
-		FVector Y(Local.M[1][0], Local.M[1][1], Local.M[1][2]);
-		FVector Z(Local.M[2][0], Local.M[2][1], Local.M[2][2]);
-
-		FVector Scale(X.Size(), Y.Size(), Z.Size());
-
-		const auto IsFinite = [](const FVector& V)
-		{
-			return std::isfinite(V.X) && std::isfinite(V.Y)	&& std::isfinite(V.Z);
-		};
-
-		constexpr float MinScale = 1e-6f;
-		if (!IsFinite(Position) || !IsFinite(Scale)	|| Scale.X <= MinScale || Scale.Y <= MinScale || Scale.Z <= MinScale)
-		{
-			return false;
-		}
-
-		X = X / Scale.X;
-		Y = Y / Scale.Y;
-		Z = Z / Scale.Z;
-
-		// 세 축이 서로 직교해야 위치·회전·크기로 표현할 수 있다.
-		constexpr float OrthoTolerance = 1e-3f;	if (std::abs(X.Dot(Y)) > OrthoTolerance	|| std::abs(X.Dot(Z)) > OrthoTolerance || std::abs(Y.Dot(Z)) > OrthoTolerance)
-		{
-			return false;
-		}
-
-		// 반사가 있는 경우 부호를 X 스케일에 저장합니다.
-		if (X.Cross(Y).Dot(Z) < 0.0f)
-		{
-			X = X * -1.0f;
-			Scale.X = -Scale.X;
-		}
-
-		OutPosition = Position;
-		OutRotation = QuatFromRotationRows(X, Y, Z).Normalized();
-		OutScale = Scale;
-		return true;
-	}
-
 }
 
 
@@ -1148,20 +1077,17 @@ static UAnimSequence* LoadAnimSequenceInContext(const FString& Path, int32 Stack
 				Local = Global * ParentGlobal.Inverse();
 			}
 
-			FVector Position;
-			FQuat Rotation;
-			FVector Scale;
-
-			if (!TryDecomposeBoneLocal(Local, Position, Rotation, Scale))
+			FLocalBoneTransform Transform;
+			if (!FLocalBoneTransform::TryFromMatrix(Local, Transform))
 			{
 				HTR_LOG(Error, "Cannot decompose bone '{}' at key {}",	Bones[BoneIndex].Name, KeyIndex);
 				return nullptr;
 			}
 
 			FRawAnimSequenceTrack& Track = Data.Tracks[BoneIndex].InternalTrack;
-			Track.PosKeys.Add(Position);
-			Track.RotKeys.Add(Rotation);
-			Track.ScaleKeys.Add(Scale);
+			Track.PosKeys.Add(Transform.Position);
+			Track.RotKeys.Add(Transform.Rotation);
+			Track.ScaleKeys.Add(Transform.Scale);
 		}
 	}
 

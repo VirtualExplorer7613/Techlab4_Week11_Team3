@@ -18,6 +18,7 @@ public:
 	// 인덱스로 뼈 하나의 Local(부모 기준) 행렬을 바꾼다. 반영은 ApplyPose
 	bool SetBoneLocalTransform(int32 BoneIndex, const FMatrix& Local);
 	void ApplyPose() { RefreshSkinning(LocalPose); }
+	bool ApplyLocalPose(TArray<FMatrix> InLocalPose);
 	bool ApplyAnimationPose(const UAnimSequence& Sequence, double TimeSeconds);
 	bool PlayAnimation(const UAnimSequence* Sequence, bool bLooping = false);
 	void TickComponent(float DeltaTime) override;
